@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AETHER | The Operating System for Orbital Logistics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-color: #050505;
+            --accent-cyan: #00E5FF;
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* Subtle Grid Overlay */
+        .grid-overlay {
+            background-image: 
+                linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: radial-gradient(circle at center, black, transparent 80%);
+        }
+
+        /* Scanline effect for technical feel */
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.1;
+        }
+
+        .glow-text {
+            text-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+        }
+
+        .border-technical {
+            border: 1px solid var(--border-color);
+        }
+
+        .gradient-line {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+        }
+
+        .nav-link {
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .nav-link:hover { color: var(--accent-cyan); }
+
+        @keyframes pulse-cyan {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--accent-cyan);
+            border-radius: 50%;
+            animation: pulse-cyan 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-40 border-b border-white/5 bg-black/50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <span class="mono text-lg font-bold tracking-[0.3em] uppercase glow-text">Aether</span>
+                <div class="hidden md:flex gap-6">
+                    <a href="#thesis" class="nav-link">Thesis</a>
+                    <a href="#engine" class="nav-link">The Engine</a>
+                    <a href="#economics" class="nav-link">Economics</a>
+                    <a href="#team" class="nav-link">Operators</a>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="hidden sm:flex items-center gap-2 px-3 py-1 border border-white/10 rounded-full">
+                    <div class="status-dot"></div>
+                    <span class="mono text-[10px] uppercase tracking-widest text-white/60">System Online</span>
+                </div>
+                <button class="bg-white text-black px-5 py-2 text-[11px] font-bold uppercase tracking-widest hover:bg-cyan-400 transition-colors duration-300">
+                    Book Mission
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+        <div class="absolute inset-0 grid-overlay"></div>
+        
+        <!-- Background Orbital Art (Subtle SVG) -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] opacity-20 pointer-events-none">
+            <svg viewBox="0 0 100 100" class="w-full h-full opacity-30">
+                <circle cx="50" cy="50" r="48" fill="none" stroke="white" stroke-width="0.05" />
+                <circle cx="50" cy="50" r="35" fill="none" stroke="white" stroke-width="0.05" stroke-dasharray="1 2" />
+                <circle cx="50" cy="50" r="20" fill="none" stroke="cyan" stroke-width="0.1" />
+            </svg>
+        </div>
+
+        <div class="relative z-10 max-w-5xl mx-auto px-6 text-center">
+            <div class="inline-block mb-6 px-4 py-1 border border-cyan-500/30 bg-cyan-500/5 rounded-full">
+                <span class="mono text-xs uppercase tracking-[0.2em] text-cyan-400">Pre-Seed Development Phase</span>
+            </div>
+            <h1 class="text-5xl md:text-8xl font-light tracking-tight mb-8 leading-[1.1]">
+                The Operating System for <br/>
+                <span class="font-medium">Orbital Logistics</span>
+            </h1>
+            <p class="text-lg md:text-xl text-white/50 max-w-2xl mx-auto mb-12 leading-relaxed font-light">
+                Aether is the coordination layer for space. We turn fragmented, manual launch procurement into a programmable, automated infrastructure.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                <button class="w-full sm:w-auto px-8 py-4 border border-white/20 hover:border-cyan-400 hover:text-cyan-400 transition-all mono text-xs uppercase tracking-widest">
+                    View Technical Deck
+                </button>
+                <div class="flex items-center gap-4 text-white/40">
+                    <span class="mono text-[10px] uppercase tracking-tighter italic">Securing $21B+ Global Launch Spend</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Indicator -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+            <span class="mono text-[9px] uppercase tracking-[0.3em] text-white/30">Scroll to Initiate</span>
+            <div class="w-px h-12 bg-gradient-to-b from-cyan-500/50 to-transparent"></div>
+        </div>
+    </section>
+
+    <!-- Thesis Section -->
+    <section id="thesis" class="py-32 relative border-t border-white/5 bg-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+                <div>
+                    <h2 class="mono text-xs uppercase tracking-[0.3em] text-cyan-500 mb-6">Historical Context</h2>
+                    <h3 class="text-4xl font-medium mb-8 leading-tight">
+                        Power accrues to those who control the infrastructure of movement.
+                    </h3>
+                    <div class="space-y-6 text-white/60 font-light leading-relaxed">
+                        <p>The Silk Road defined trade networks. The Industrial Revolution belonged to the railroads. The 20th century was dictated by pipelines.</p>
+                        <p class="text-white">Today, orbital infrastructure is emerging as the next global logistics network. But while launch capacity is scaling via reusable flight, the coordination layer remains stuck in the 1990s.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="p-8 border-technical bg-white/5 backdrop-blur-sm">
+                        <span class="mono text-cyan-500 text-sm mb-2 block">01</span>
+                        <h4 class="text-lg font-medium mb-2 uppercase tracking-wide">Fragmentation</h4>
+                        <p class="text-xs text-white/40 leading-relaxed uppercase tracking-tighter">80+ launch vehicles. 1M+ proposed spacecraft. Manual combinatorial chaos.</p>
+                    </div>
+                    <div class="p-8 border-technical bg-white/5 backdrop-blur-sm mt-4">
+                        <span class="mono text-cyan-500 text-sm mb-2 block">02</span>
+                        <h4 class="text-lg font-medium mb-2 uppercase tracking-wide">Opacity</h4>
+                        <p class="text-xs text-white/40 leading-relaxed uppercase tracking-tighter">2+ year lead times. 90-page RFIs. $M+ rework due to late-stage incompatibility.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Problem / Economics -->
+    <section id="economics" class="py-32 bg-[#080808]">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col items-center text-center mb-24">
+                <h2 class="mono text-xs uppercase tracking-[0.3em] text-cyan-500 mb-6">The Efficiency Gap</h2>
+                <h3 class="text-4xl md:text-5xl font-medium">Underutilisation is an invisible tax.</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div class="flex flex-col items-center text-center">
+                    <span class="text-6xl font-light mb-4">5x</span>
+                    <p class="mono text-[10px] uppercase tracking-widest text-white/40 mb-4">Cost Inflation</p>
+                    <p class="text-sm text-white/60 font-light">Fragmented allocation forces payloads into unoptimised manifests, inflating effective launch costs by 500%.</p>
+                </div>
+                <div class="flex flex-col items-center text-center">
+                    <span class="text-6xl font-light mb-4">$16B</span>
+                    <p class="mono text-[10px] uppercase tracking-widest text-white/40 mb-4">Unoptimised Spend</p>
+                    <p class="text-sm text-white/60 font-light">Projected annual waste due to idle launch capacity and missed windows in the next decade.</p>
+                </div>
+                <div class="flex flex-col items-center text-center">
+                    <span class="text-6xl font-light mb-4">~19%</span>
+                    <p class="mono text-[10px] uppercase tracking-widest text-white/40 mb-4">Avg. Utilisation</p>
+                    <p class="text-sm text-white/60 font-light">Current fill rate for dedicated missions. The gap between theoretical capacity and actual orbital delivery.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Engine Section (Product) -->
+    <section id="engine" class="py-32 relative border-y border-white/5 overflow-hidden">
+        <div class="absolute inset-0 grid-overlay opacity-50"></div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-20">
+                <div>
+                    <h2 class="mono text-xs uppercase tracking-[0.3em] text-cyan-500 mb-6">The Solution</h2>
+                    <h3 class="text-4xl font-medium mb-12">The Aether Optimisation Engine</h3>
+                    
+                    <ul class="space-y-12">
+                        <li class="flex gap-6">
+                            <div class="w-10 h-10 shrink-0 border border-cyan-500/40 flex items-center justify-center mono text-cyan-500">01</div>
+                            <div>
+                                <h4 class="text-xl font-medium mb-2 tracking-tight">Algorithmic Manifest Optimization</h4>
+                                <p class="text-white/50 text-sm font-light leading-relaxed">Automated matching of spacecraft constraints (mass, orbit, interface) against global launch supply in real-time.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-6">
+                            <div class="w-10 h-10 shrink-0 border border-white/20 flex items-center justify-center mono text-white/40">02</div>
+                            <div>
+                                <h4 class="text-xl font-medium mb-2 tracking-tight">Dynamic Capacity Allocation</h4>
+                                <p class="text-white/50 text-sm font-light leading-relaxed">Programmable booking and pricing layers that allow operators to hedge risk and secure slots with surgical precision.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-6">
+                            <div class="w-10 h-10 shrink-0 border border-white/20 flex items-center justify-center mono text-white/40">03</div>
+                            <div>
+                                <h4 class="text-xl font-medium mb-2 tracking-tight">System of Record</h4>
+                                <p class="text-white/50 text-sm font-light leading-relaxed">A unified digital thread for every mission, moving the industry from spreadsheets to a high-fidelity data infrastructure.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Abstract UI Visualization -->
+                <div class="relative bg-black border border-white/10 p-2 shadow-2xl">
+                    <div class="bg-[#0c0c0c] p-6 border border-white/5">
+                        <div class="flex justify-between items-center mb-8 pb-4 border-b border-white/5">
+                            <span class="mono text-[10px] tracking-[0.2em] text-white/40 uppercase italic">Aether_Manifest_Optimizer_v.0.4</span>
+                            <span class="mono text-[10px] text-cyan-400">OPTIMAL MATCH FOUND</span>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="h-32 w-full border border-dashed border-white/10 flex items-center justify-center">
+                                <svg width="200" height="60" viewBox="0 0 200 60" class="opacity-50">
+                                    <path d="M0 30 Q 50 10, 100 30 T 200 30" fill="none" stroke="cyan" stroke-width="0.5" />
+                                    <path d="M0 40 Q 50 20, 100 40 T 200 40" fill="none" stroke="white" stroke-width="0.2" />
+                                </svg>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-white/5 p-4 border-l-2 border-cyan-500">
+                                    <p class="mono text-[9px] text-white/30 uppercase mb-1">Payload Efficiency</p>
+                                    <p class="text-2xl font-light text-cyan-400 tracking-tighter">94.2%</p>
+                                </div>
+                                <div class="bg-white/5 p-4 border-l-2 border-white/20">
+                                    <p class="mono text-[9px] text-white/30 uppercase mb-1">Cost Reduction</p>
+                                    <p class="text-2xl font-light tracking-tighter">-$2.4M</p>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-white/5 border border-white/5">
+                                <div class="flex justify-between mb-2">
+                                    <span class="mono text-[9px] uppercase text-white/40">Allocation Trace</span>
+                                    <span class="mono text-[9px] text-cyan-500">Active</span>
+                                </div>
+                                <div class="w-full bg-white/10 h-1">
+                                    <div class="bg-cyan-500 h-full w-[87%]"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team / Credibility Section -->
+    <section id="team" class="py-32 bg-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+                <div class="max-w-xl">
+                    <h2 class="mono text-xs uppercase tracking-[0.3em] text-cyan-500 mb-6">The Operators</h2>
+                    <h3 class="text-4xl font-medium tracking-tight">Built by the industry's veterans and AI engineers.</h3>
+                </div>
+                <div class="mono text-[11px] text-white/40 uppercase tracking-widest pb-2">
+                    Collective Experience: SpaceX, Rocket Lab, DeepMind, ESA
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10 border border-white/10">
+                <div class="bg-black p-10 hover:bg-[#080808] transition-colors">
+                    <h4 class="text-xl font-medium mb-1 tracking-tight">James Ming Liang Ang</h4>
+                    <p class="mono text-[10px] text-cyan-500 uppercase tracking-widest mb-6 italic">Co-Founder & CTO</p>
+                    <p class="text-sm text-white/50 font-light leading-relaxed italic uppercase tracking-tighter">PhD CS @ UCL (Optimisation). Former Researcher @ RIKEN AI & Google TensorFlow. Scaled deep-tech startups from zero.</p>
+                </div>
+                <div class="bg-black p-10 hover:bg-[#080808] transition-colors">
+                    <h4 class="text-xl font-medium mb-1 tracking-tight">Genna Ng</h4>
+                    <p class="mono text-[10px] text-cyan-500 uppercase tracking-widest mb-6 italic">Co-Founder & CEO</p>
+                    <p class="text-sm text-white/50 font-light leading-relaxed italic uppercase tracking-tighter">Former Commercial Strategy @ PLD Space (€1B+ Pipeline). Satellite Engineer (NUS). Space & Frontier Tech Venture Partner.</p>
+                </div>
+                <div class="bg-black p-10 hover:bg-[#080808] transition-colors">
+                    <h4 class="text-xl font-medium mb-1 tracking-tight">Dr. Sandy Tirtey</h4>
+                    <p class="mono text-[10px] text-cyan-500 uppercase tracking-widest mb-6 italic">Strategic Partner</p>
+                    <p class="text-sm text-white/50 font-light leading-relaxed italic uppercase tracking-tighter">Former Senior Director, Global Launch Services @ Rocket Lab. PhD Aerospace & Hypersonics. Technical Lead @ Scramspace.</p>
+                </div>
+            </div>
+
+            <!-- LOI Banner -->
+            <div class="mt-20 py-8 border-y border-white/5 flex flex-wrap justify-center items-center gap-12 grayscale opacity-50">
+                <span class="mono text-xs tracking-widest">7+ LOIs across Ecosystem</span>
+                <div class="flex gap-12 items-center italic mono text-[10px] uppercase tracking-[0.2em] font-bold">
+                    <span>Satellite Operators</span>
+                    <span class="text-cyan-500">|</span>
+                    <span>Launch Providers</span>
+                    <span class="text-cyan-500">|</span>
+                    <span>Government Agencies</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="py-40 relative overflow-hidden text-center border-t border-white/5">
+        <div class="absolute inset-0 bg-gradient-to-b from-cyan-500/5 to-transparent"></div>
+        <div class="relative z-10 max-w-3xl mx-auto px-6">
+            <h2 class="text-4xl md:text-6xl font-light mb-8">The coordinate of <br/>orbital commerce.</h2>
+            <p class="text-white/40 mb-12 max-w-lg mx-auto font-light leading-relaxed">
+                Join the architects of the new space economy. We are currently engaging with select design partners for the 2026 pilot program.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button class="bg-white text-black px-10 py-5 mono text-[11px] font-bold uppercase tracking-[0.2em] hover:bg-cyan-400 transition-all">
+                    Initiate Discussion
+                </button>
+                <button class="border border-white/20 px-10 py-5 mono text-[11px] font-bold uppercase tracking-[0.2em] hover:border-white transition-all">
+                    Access Data Room
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/5 bg-black relative z-10">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex items-center gap-6">
+                <span class="mono text-sm font-bold tracking-[0.3em] uppercase">Aether</span>
+                <span class="mono text-[9px] text-white/30 uppercase tracking-widest">© 2026 Aether Space. Proprietary & Confidential.</span>
+            </div>
+            <div class="flex gap-8">
+                <a href="#" class="nav-link">Privacy</a>
+                <a href="#" class="nav-link">Terms</a>
+                <a href="#" class="nav-link">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Simple Fade-In Animation on Scroll
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100');
+                    entry.target.classList.remove('opacity-0', 'translate-y-4');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            section.classList.add('transition-all', 'duration-1000', 'ease-out', 'opacity-0', 'translate-y-4');
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
