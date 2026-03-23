@@ -1118,6 +1118,10 @@
                 launching = true;
                 launchPayload(() => { launching = false; });
             } else if (moon && raycaster.intersectObject(moon).length > 0) {
+                const hud = document.getElementById('launch-hud');
+                document.getElementById('launch-hud-text').textContent = '▲ TLI BURN INITIATED — LUNA_TRANSIT_01 // Moon intercept plotted';
+                hud.style.opacity = '1';
+                setTimeout(() => { hud.style.opacity = '0'; }, 4000);
                 launchToMoonRealistic();
             }
         });
