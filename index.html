@@ -793,7 +793,7 @@
             const d_moon = moon.position.clone().normalize();
             const e_r = d_moon.clone().negate();
             const tempV = Math.abs(e_r.y) > 0.99 ? new THREE.Vector3(1,0,0) : new THREE.Vector3(0,1,0);
-            const e_t = new THREE.Vector3().crossVectors(e_r, tempV).normalize();
+            const e_t = new THREE.Vector3().crossVectors(tempV, e_r).normalize();
 
             // Time-parameterized arc via eccentric anomaly (Kepler's 2nd law)
             const arcPts = [];
@@ -888,7 +888,7 @@
                         ));
                     }
                     const lunarOrbit = new THREE.CatmullRomCurve3(lunarPts, true);
-                    rocketSystem.push({ mesh: rocket, curve: lunarOrbit, t: 0, speed: 0.006 });
+                    rocketSystem.push({ mesh: rocket, curve: lunarOrbit, t: 0, speed: 0.0015 });
                 }
             });
         }
