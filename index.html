@@ -65,7 +65,7 @@
 
     <!-- Click hint — fixed center-bottom -->
     <div id="click-hint">
-        <p class="mono text-[10px] text-white/60 tracking-[0.4em] uppercase">Click Earth · Moon · Mars to launch</p>
+        <p class="mono text-[11px] text-white/60 tracking-[0.4em] uppercase">Click Earth · Moon · Mars to launch</p>
     </div>
 
     <!-- Navigation -->
@@ -609,20 +609,14 @@
         }
 
         // Launch payload into LEO — called on Earth click
-        function launchPayload(onDone) {
+        function launchPayload(clickPoint, onDone) {
             const hud = document.getElementById('launch-hud');
 
             const color = LAUNCH_COLORS[launchColorIndex % LAUNCH_COLORS.length];
             launchColorIndex++;
 
-            // Launch from a random point on Earth's surface
-            const theta = Math.random() * Math.PI * 2;
-            const phi   = Math.acos(2 * Math.random() - 1);
-            const surfacePoint = new THREE.Vector3(
-                12 * Math.sin(phi) * Math.cos(theta),
-                12 * Math.cos(phi),
-                12 * Math.sin(phi) * Math.sin(theta)
-            );
+            // Launch from the clicked point on Earth's surface
+            const surfacePoint = clickPoint.clone().normalize().multiplyScalar(12);
 
             const orbitRadius = 14 + Math.random() * 8;   // LEO to GEO-ish (14–22)
             // Apoapsis speed (energy-conserving): v_apo = v_circ × √(2r₀/(r₀+r₁))
@@ -1349,9 +1343,10 @@
             mouse.x =  (e.clientX / window.innerWidth)  * 2 - 1;
             mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
-            if (earth && raycaster.intersectObject(earth).length > 0) {
+            const earthHits = raycaster.intersectObject(earth);
+            if (earth && earthHits.length > 0) {
                 launching = true;
-                launchPayload(() => { launching = false; });
+                launchPayload(earthHits[0].point, () => { launching = false; });
             } else if (moon && raycaster.intersectObject(moon).length > 0) {
                 const hud = document.getElementById('launch-hud');
                 document.getElementById('launch-hud-text').textContent = '▲ TLI BURN INITIATED — LUNA_TRANSIT_01 // Moon intercept plotted';
