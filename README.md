@@ -1,1 +1,1 @@
-# aether-space.github.io
+# aether-space landing page
