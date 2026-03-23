@@ -397,9 +397,6 @@
             createOrbitalRocket(19,   Math.PI * 0.72,  0.15, 0xffffff, 0.0013); // high polar, white
 
             // 5. KINETIC TRANSIT ROCKETS (point-to-point)
-            // Earth -> Moon
-            createRocket(new THREE.Vector3(0,0,0), moon.position, 0x00e5ff, 0.003);
-            createRocket(new THREE.Vector3(0,0,0), moon.position, 0xffffff, 0.002);
             // Earth -> Mars
             createRocket(new THREE.Vector3(0,0,0), mars.position, 0xffaa00, 0.0015);
             createRocket(new THREE.Vector3(0,0,0), mars.position, 0x00e5ff, 0.001);
@@ -779,6 +776,121 @@
             });
         }
 
+        // Hohmann transfer: Earth → Moon
+        function launchToMoon() {
+            const color = 0x00e5ff;
+            const r0 = 12;
+            const r1 = moon.position.length(); // ~64.2 units
+
+            const a_ell = (r0 + r1) / 2;
+            const ecc   = (r1 - r0) / (r1 + r0);
+            // Transfer half-period (same formula as launchPayload)
+            const arcDuration = Math.PI * Math.pow(a_ell, 1.5) / 41.67;
+
+            // Orbital plane: periapsis points away from Moon, tangent perpendicular
+            const d_moon = moon.position.clone().normalize();
+            const e_r = d_moon.clone().negate();
+            const tempV = Math.abs(e_r.y) > 0.99 ? new THREE.Vector3(1,0,0) : new THREE.Vector3(0,1,0);
+            const e_t = new THREE.Vector3().crossVectors(e_r, tempV).normalize();
+
+            // Time-parameterized arc via eccentric anomaly (Kepler's 2nd law)
+            const arcPts = [];
+            for (let k = 0; k <= 64; k++) {
+                const M  = (k / 64) * Math.PI;
+                const E  = solveKepler(M, ecc);
+                const th = 2 * Math.atan2(
+                    Math.sqrt(1 + ecc) * Math.sin(E / 2),
+                    Math.sqrt(1 - ecc) * Math.cos(E / 2)
+                );
+                const r = a_ell * (1 - ecc * ecc) / (1 + ecc * Math.cos(th));
+                arcPts.push(new THREE.Vector3(
+                    e_r.x * r * Math.cos(th) + e_t.x * r * Math.sin(th),
+                    e_r.y * r * Math.cos(th) + e_t.y * r * Math.sin(th),
+                    e_r.z * r * Math.cos(th) + e_t.z * r * Math.sin(th)
+                ));
+            }
+            const launchCurve = new THREE.CatmullRomCurve3(arcPts, false);
+
+            // Rocket mesh
+            const rocket = new THREE.Mesh(
+                new THREE.SphereGeometry(0.3, 8, 8),
+                new THREE.MeshBasicMaterial({ color })
+            );
+            rocket.position.copy(launchCurve.getPoint(0));
+            scene.add(rocket);
+
+            // Additive blending trail (dual-pass glow)
+            const TRAIL_MAX = 90;
+            const trailBuf = new Float32Array(TRAIL_MAX * 3);
+            const trailGeo = new THREE.BufferGeometry();
+            trailGeo.setAttribute('position', new THREE.BufferAttribute(trailBuf, 3));
+            trailGeo.setDrawRange(0, 0);
+            const trailLine = new THREE.Line(trailGeo, new THREE.LineBasicMaterial({
+                color, transparent: true, opacity: 1.0,
+                blending: THREE.AdditiveBlending, depthWrite: false
+            }));
+            scene.add(trailLine);
+
+            const glowBuf = new Float32Array(TRAIL_MAX * 3);
+            const glowGeo = new THREE.BufferGeometry();
+            glowGeo.setAttribute('position', new THREE.BufferAttribute(glowBuf, 3));
+            glowGeo.setDrawRange(0, 0);
+            const glowLine = new THREE.Line(glowGeo, new THREE.LineBasicMaterial({
+                color, transparent: true, opacity: 0.35,
+                blending: THREE.AdditiveBlending, depthWrite: false
+            }));
+            scene.add(glowLine);
+
+            const history = [];
+            const tween = { t: 0 };
+
+            gsap.to(tween, {
+                t: 1,
+                duration: arcDuration,
+                ease: 'none',
+                onUpdate: () => {
+                    const pos = launchCurve.getPoint(tween.t);
+                    rocket.position.copy(pos);
+                    history.unshift(pos.clone());
+                    if (history.length > TRAIL_MAX) history.pop();
+                    const arr  = trailGeo.attributes.position.array;
+                    const garr = glowGeo.attributes.position.array;
+                    for (let i = 0; i < history.length; i++) {
+                        arr[i*3]  = garr[i*3]  = history[i].x;
+                        arr[i*3+1]= garr[i*3+1]= history[i].y;
+                        arr[i*3+2]= garr[i*3+2]= history[i].z;
+                    }
+                    trailGeo.attributes.position.needsUpdate = true;
+                    glowGeo.attributes.position.needsUpdate  = true;
+                    trailGeo.setDrawRange(0, history.length);
+                    glowGeo.setDrawRange(0, history.length);
+                },
+                onComplete: () => {
+                    scene.remove(trailLine);
+                    scene.remove(glowLine);
+
+                    // Insert into small circular lunar orbit
+                    const lunarR = 5;
+                    // Orbital plane: use e_t as the ring's radial direction for variety
+                    const ln = new THREE.Vector3().crossVectors(e_r, e_t).normalize();
+                    const lunarPts = [];
+                    for (let k = 0; k < 64; k++) {
+                        const phi = (k / 64) * Math.PI * 2;
+                        const ox = e_r.x * lunarR * Math.cos(phi) + e_t.x * lunarR * Math.sin(phi);
+                        const oy = e_r.y * lunarR * Math.cos(phi) + e_t.y * lunarR * Math.sin(phi);
+                        const oz = e_r.z * lunarR * Math.cos(phi) + e_t.z * lunarR * Math.sin(phi);
+                        lunarPts.push(new THREE.Vector3(
+                            moon.position.x + ox,
+                            moon.position.y + oy,
+                            moon.position.z + oz
+                        ));
+                    }
+                    const lunarOrbit = new THREE.CatmullRomCurve3(lunarPts, true);
+                    rocketSystem.push({ mesh: rocket, curve: lunarOrbit, t: 0, speed: 0.006 });
+                }
+            });
+        }
+
         // Click Earth to launch
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
@@ -803,6 +915,10 @@
             const hit = earth && raycaster.intersectObject(earth).length > 0;
             document.getElementById('canvas-container').style.cursor = hit ? 'crosshair' : 'default';
         });
+
+        // Auto-launch Earth→Moon Hohmann transfer periodically
+        launchToMoon();
+        setInterval(launchToMoon, 25000);
 
         // NASA Curiosity live data
         async function fetchCuriosityData() {
