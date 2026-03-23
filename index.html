@@ -67,17 +67,17 @@
     </nav>
 
     <main class="ui-layer">
-        <!-- Hero Section -->
+        <!-- Page 1: The Operating System for Orbital Logistics -->
         <section id="page1" class="min-h-screen flex items-end pb-20 px-10 lg:px-32">
             <div class="max-w-xl">
                 <div class="hud-line"></div>
                 <h1 class="text-4xl md:text-5xl lg:text-6xl tracking-tight mb-8 leading-[1.05]">
                     <span class="font-light text-white/60">The</span> operating<br/>
                     <span class="font-bold">SYSTEM</span> <span class="font-light text-white/40">for</span><br/>
-                    <span class="font-bold italic">Orbital</span> <span class="font-light text-white/25">logistics.</span>
+                    <span class="font-bold italic">Orbital</span> <span class="font-light text-white/25">Logistics.</span>
                 </h1>
                 <p class="text-sm text-white/40 max-w-sm mb-10 font-light leading-relaxed border-l border-cyan-500/20 pl-6">
-                    Fragmented launch is a relic. Aether provides the unified software layer for multi-planetary asset coordination, from LEO shells to Martian transit.
+                    Mission planning, launch allocation, and orbital logistics software for a market still running on spreadsheets, RFIs, and fragmented coordination.
                 </p>
                 <!-- Launch HUD notification -->
                 <div id="launch-hud" class="mt-6 opacity-0 transition-opacity duration-500 pointer-events-none">
@@ -87,75 +87,52 @@
             </div>
         </section>
 
-
         <!-- Scroll spacer — gives the camera zoom room to breathe -->
         <div style="height: 120vh;"></div>
 
-        <!-- Page 2: Lunar Gateway -->
+        <!-- Page 2: Launch Allocation Breaks at Scale -->
         <section id="page2" class="min-h-screen flex items-center px-10 lg:px-32 relative">
-
-
             <div class="relative z-10 max-w-5xl w-full">
                 <div class="hud-line"></div>
-                <p class="mono text-[9px] tracking-[0.5em] text-cyan-400 uppercase mb-6">Node_02 / Lunar_Gateway</p>
+                <p class="mono text-[9px] tracking-[0.5em] text-cyan-400 uppercase mb-6">Node_02 / Allocation_Layer</p>
 
                 <h2 class="text-6xl md:text-8xl font-light tracking-tighter mb-10 leading-[0.9]">
-                    The Moon Is Not<br/>
-                    <span class="font-bold italic">a Destination.</span><br/>
-                    <span class="text-white/40">It's a Junction.</span>
+                    Launch Allocation<br/>
+                    <span class="font-bold italic">Breaks at Scale.</span><br/>
+                    <span class="text-white/40">Aether Fixes It.</span>
                 </h2>
 
                 <p class="text-lg text-white/50 max-w-xl font-light leading-relaxed border-l border-cyan-500/30 pl-8">
-                    Every deep-space mission passes through cislunar space. Aether treats the Moon as a permanent waypoint — a refuelling node, a relay anchor, and a staging ground for Martian and beyond-orbit operations.
+                    As launch supply scales, manual procurement becomes a system-level bottleneck. Aether turns fragmented launch allocation into programmable coordination.
                 </p>
             </div>
         </section>
+
         <!-- Scroll spacer before Mars -->
         <div style="height: 120vh;"></div>
 
-        <!-- Page 3: Mars -->
+        <!-- Page 3: The System of Record for Launch Allocation -->
         <section id="page3" class="min-h-screen flex items-end pb-20 px-10 lg:px-32 relative">
             <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black/85 pointer-events-none"></div>
             <div class="relative z-10 max-w-xl">
                 <div class="hud-line" style="background: linear-gradient(90deg, #ff6b35, transparent);"></div>
-                <p class="mono text-[9px] tracking-[0.5em] uppercase mb-6" style="color: #ff6b35;">Node_03 / Mars_Transit</p>
+                <p class="mono text-[9px] tracking-[0.5em] uppercase mb-6" style="color: #ff6b35;">Node_03 / System_of_Record</p>
                 <h2 class="text-4xl md:text-5xl lg:text-6xl tracking-tight mb-8 leading-[1.05]">
-                    <span class="font-light text-white/60">The</span> final<br/>
-                    <span class="font-bold">FRONTIER</span> <span class="font-light text-white/40">is</span><br/>
-                    <span class="font-bold italic" style="color: #ff6b35;">operational.</span>
+                    <span class="font-light text-white/60">The</span> system<br/>
+                    <span class="font-bold">OF RECORD</span> <span class="font-light text-white/40">for</span><br/>
+                    <span class="font-bold italic" style="color: #ff6b35;">Launch Allocation.</span>
                 </h2>
-                <p class="text-sm text-white/40 max-w-sm font-light leading-relaxed pl-6 mb-8" style="border-left: 1px solid rgba(255,107,53,0.3);">
-                    Aether's Mars corridor handles 12 active transits across a 7-month transfer window. Payload manifests, delta-v budgets, and surface logistics — all coordinated through a single mesh.
+                <p class="text-sm text-white/40 max-w-sm font-light leading-relaxed pl-6 mb-10" style="border-left: 1px solid rgba(255,107,53,0.3);">
+                    Aether transforms launch procurement from fragmented manual workflows into a unified coordination layer that compounds with every mission.
                 </p>
-                <!-- Live Curiosity data from NASA API -->
-                <div class="flex gap-8 mb-6">
-                    <div>
-                        <p class="mono text-[8px] uppercase tracking-widest mb-1" style="color: rgba(255,107,53,0.5);">Curiosity / Gale Crater</p>
-                        <p class="mono text-[10px] text-white/50">4.5°S 137.4°E · Sol <span id="rover-sol">—</span></p>
+                <div class="flex gap-10">
+                    <div class="stat-card" style="border-color: rgba(255,107,53,0.12);">
+                        <p class="mono text-[8px] uppercase tracking-widest mb-2" style="color: rgba(255,107,53,0.5);">Workflow Type</p>
+                        <p class="mono text-[11px] text-white/60">Unified · Programmable</p>
                     </div>
-                    <div>
-                        <p class="mono text-[8px] uppercase tracking-widest mb-1" style="color: rgba(255,107,53,0.5);">Earth Date</p>
-                        <p id="rover-date" class="mono text-[10px] text-white/50">—</p>
-                    </div>
-                    <div>
-                        <p class="mono text-[8px] uppercase tracking-widest mb-1" style="color: rgba(255,107,53,0.5);">Camera</p>
-                        <p id="rover-cam" class="mono text-[10px] text-white/50">—</p>
-                    </div>
-                </div>
-
-                <!-- Latest Curiosity photo thumbnail -->
-                <div id="rover-card" class="interactive opacity-0 transition-opacity duration-1000" style="pointer-events:auto;">
-                    <p class="mono text-[7px] uppercase tracking-widest mb-2" style="color: rgba(255,107,53,0.4);">▸ Latest transmission from Mars surface</p>
-                    <div class="relative overflow-hidden" style="width:320px; border:1px solid rgba(255,107,53,0.2);">
-                        <img id="rover-photo" class="w-full block" style="display:none; filter:sepia(0.2) contrast(1.05);" />
-                        <div id="rover-loading" class="w-full flex items-center justify-center bg-white/5" style="height:180px;">
-                            <span class="mono text-[8px] text-white/20 uppercase tracking-widest">Awaiting signal...</span>
-                        </div>
-                        <!-- Scan-line overlay -->
-                        <div class="absolute inset-0 pointer-events-none" style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);"></div>
-                        <div class="absolute bottom-0 left-0 right-0 px-3 py-2" style="background:linear-gradient(transparent, rgba(0,0,0,0.7));">
-                            <p id="rover-caption" class="mono text-[7px] text-white/50">—</p>
-                        </div>
+                    <div class="stat-card" style="border-color: rgba(255,107,53,0.12);">
+                        <p class="mono text-[8px] uppercase tracking-widest mb-2" style="color: rgba(255,107,53,0.5);">Legacy Stack</p>
+                        <p class="mono text-[11px] text-white/60">Spreadsheets · RFIs · Email</p>
                     </div>
                 </div>
             </div>
@@ -1075,49 +1052,12 @@
         });
 
         // NASA Curiosity live data
-        async function fetchCuriosityData() {
-            try {
-                // Prefer NAVCAM/MAST for landscape shots
-                const url = 'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/latest_photos?api_key=DEMO_KEY';
-                const res  = await fetch(url);
-                const data = await res.json();
-                const photos = data.latest_photos;
-                if (!photos || !photos.length) return;
-
-                // Pick best camera: NAVCAM_LEFT > MAST > RHAZ > any
-                const pick = (name) => photos.find(p => p.camera.name === name);
-                const photo = pick('NAVCAM_LEFT') || pick('MAST') || pick('RHAZ') || photos[0];
-
-                // Update stats
-                document.getElementById('rover-sol').textContent  = photo.sol;
-                document.getElementById('rover-date').textContent = photo.earth_date;
-                document.getElementById('rover-cam').textContent  = photo.camera.full_name;
-                document.getElementById('rover-caption').textContent =
-                    `${photo.camera.full_name} · ${photo.earth_date} · Sol ${photo.sol}`;
-
-                // Load image
-                const img = document.getElementById('rover-photo');
-                img.onload = () => {
-                    document.getElementById('rover-loading').style.display = 'none';
-                    img.style.display = 'block';
-                    document.getElementById('rover-card').style.opacity = '1';
-                };
-                img.onerror = () => {
-                    document.getElementById('rover-card').style.opacity = '1';
-                };
-                img.src = photo.img_src;
-
-            } catch(e) {
-                // API unavailable — card stays hidden, static text remains
-            }
-        }
-
         // Fake loader progress
         let p = 0;
         const int = setInterval(() => {
             p += Math.random() * 15;
             document.getElementById('progress').style.width = p + '%';
-            if(p >= 100) { clearInterval(int); init(); setupScroll(); fetchCuriosityData(); }
+            if(p >= 100) { clearInterval(int); init(); setupScroll(); }
         }, 120);
 
     </script>
