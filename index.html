@@ -261,6 +261,8 @@
         const LOOK_MARS  = { x: -122, y: 14, z: -124 };  // left of Mars — Mars sits right of frame
 
         let scrollProgress2 = 0;
+        let smoothProgress  = 0;   // lerped — decouples lookAt from GSAP scrub oscillations
+        let smoothProgress2 = 0;
 
         // Launch colors — cycled per launch
         const LAUNCH_COLORS = [0x00e5ff, 0xff6b35, 0xffffff, 0xc084fc, 0xfbbf24, 0x4ade80];
@@ -506,10 +508,14 @@
                     r.mesh.children[0].scale.setScalar(1 + Math.sin(time * 10) * 0.2);
             });
 
+            // Smooth progress to prevent GSAP scrub oscillations reaching lookAt
+            smoothProgress  += (scrollProgress  - smoothProgress)  * 0.08;
+            smoothProgress2 += (scrollProgress2 - smoothProgress2) * 0.08;
+
             // Camera: three-stage scroll
-            if (scrollProgress2 > 0.01) {
+            if (smoothProgress2 > 0.01) {
                 // Stage 3: zoom into Mars
-                const p = scrollProgress2;
+                const p = smoothProgress2;
                 const tx = CAM_END.x + (CAM_MARS.x - CAM_END.x) * p;
                 const ty = CAM_END.y + (CAM_MARS.y - CAM_END.y) * p;
                 const tz = CAM_END.z + (CAM_MARS.z - CAM_END.z) * p;
@@ -520,9 +526,9 @@
                 const ly = LOOK_END.y + (LOOK_MARS.y - LOOK_END.y) * p;
                 const lz = LOOK_END.z + (LOOK_MARS.z - LOOK_END.z) * p;
                 camera.lookAt(lx, ly, lz);
-            } else if (scrollProgress > 0.01) {
+            } else if (smoothProgress > 0.01) {
                 // Stage 2: pull back to Earth + Moon
-                const p = scrollProgress;
+                const p = smoothProgress;
                 const tx = CAM_START.x + (CAM_END.x - CAM_START.x) * p;
                 const ty = CAM_START.y + (CAM_END.y - CAM_START.y) * p;
                 const tz = CAM_START.z + (CAM_END.z - CAM_START.z) * p;
