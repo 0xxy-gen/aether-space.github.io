@@ -782,7 +782,7 @@
         function launchToMoon() {
             const color = 0x00e5ff;
             const r0 = 12;
-            const r1 = moon.position.length(); // ~64.2 units
+            const r1 = moon.position.length() - 3; // ~61.2 — Earth-facing Moon surface
 
             const a_ell = (r0 + r1) / 2;
             const ecc   = (r1 - r0) / (r1 + r0);
@@ -870,25 +870,13 @@
                 onComplete: () => {
                     scene.remove(trailLine);
                     scene.remove(glowLine);
-
-                    // Insert into small circular lunar orbit
-                    const lunarR = 5;
-                    // Orbital plane: use e_t as the ring's radial direction for variety
-                    const ln = new THREE.Vector3().crossVectors(e_r, e_t).normalize();
-                    const lunarPts = [];
-                    for (let k = 0; k < 64; k++) {
-                        const phi = (k / 64) * Math.PI * 2;
-                        const ox = e_r.x * lunarR * Math.cos(phi) + e_t.x * lunarR * Math.sin(phi);
-                        const oy = e_r.y * lunarR * Math.cos(phi) + e_t.y * lunarR * Math.sin(phi);
-                        const oz = e_r.z * lunarR * Math.cos(phi) + e_t.z * lunarR * Math.sin(phi);
-                        lunarPts.push(new THREE.Vector3(
-                            moon.position.x + ox,
-                            moon.position.y + oy,
-                            moon.position.z + oz
-                        ));
-                    }
-                    const lunarOrbit = new THREE.CatmullRomCurve3(lunarPts, true);
-                    rocketSystem.push({ mesh: rocket, curve: lunarOrbit, t: 0, speed: 0.0015 });
+                    // Landing: shrink rocket into Moon surface, then remove
+                    gsap.to(rocket.scale, {
+                        x: 0, y: 0, z: 0,
+                        duration: 0.8,
+                        ease: 'power2.in',
+                        onComplete: () => scene.remove(rocket)
+                    });
                 }
             });
         }
