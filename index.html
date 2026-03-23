@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="//embed.typeform.com/next/embed.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <style>
         body { background-color: #000; color: #fff; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
@@ -72,13 +73,19 @@
             <div class="max-w-xl">
                 <div class="hud-line"></div>
                 <h1 class="text-5xl md:text-6xl lg:text-7xl tracking-tighter mb-8 leading-[1.0]">
-                    <span class="font-light text-white/40">The</span> <span class="font-light text-white/40">operating</span><br/>
+                    <span class="font-light text-white/40">The</span> <span class="font-light text-white/40">Operating</span><br/>
                     <span class="font-bold">SYSTEM</span> <span class="font-light text-white/30">for</span><br/>
                     <span class="font-bold italic">Orbital</span> <span class="font-light text-white/15">Logistics.</span>
                 </h1>
-                <p class="text-sm text-white/40 max-w-sm mb-10 font-light leading-relaxed border-l border-cyan-500/20 pl-6">
-                    Mission planning, launch allocation, and orbital logistics software for a market still running on spreadsheets, RFIs, and fragmented coordination.
+                <p class="text-sm text-white/40 max-w-sm mb-8 font-light leading-relaxed border-l border-cyan-500/20 pl-6">
+                    Automated mission planning, launch allocation, and manifest optimisation that turns fragmented procurement into coordinated, high-utilisation missions across Earth, Moon, and Mars.
                 </p>
+                <div class="mb-2">
+                    <button data-tf-popup="PLACEHOLDER" data-tf-opacity="100" data-tf-size="70" data-tf-iframe-props="title=Join Private Beta Waitlist" data-tf-transitive-search-params data-tf-medium="snippet" class="bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-8 py-3 rounded-full text-sm tracking-wide transition-colors cursor-pointer">
+                        Join Private Beta Waitlist →
+                    </button>
+                </div>
+                <p class="text-white/30 text-[10px] font-light tracking-wide mb-8">Built by operators from PLD Space, Rocket Lab &amp; UCL ML PhD &nbsp;•&nbsp; 7+ LOIs signed</p>
                 <!-- Launch HUD notification -->
                 <div id="launch-hud" class="mt-6 opacity-0 transition-opacity duration-500 pointer-events-none">
                     <p class="mono text-[9px] text-cyan-400 tracking-widest uppercase">▲ Payload inserted — LEO_SHELL_01 // Insertion confirmed</p>
