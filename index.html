@@ -54,12 +54,12 @@
 
     <div id="canvas-container"></div>
 
-    <!-- Launch HUD — fixed center -->
-    <div id="launch-hud" class="fixed inset-0 flex items-center justify-center opacity-0 transition-opacity duration-500 pointer-events-none" style="z-index:20;">
+    <!-- Launch HUD — near bottom click hint -->
+    <div id="launch-hud" class="fixed opacity-0 transition-opacity duration-500 pointer-events-none" style="z-index:20; bottom:68px; left:50%; transform:translateX(-50%); white-space:nowrap;">
         <p id="launch-hud-text" class="mono text-[11px] text-cyan-400 tracking-[0.4em] uppercase text-center"></p>
     </div>
-    <!-- Mars HUD — fixed center -->
-    <div id="mars-hud" class="fixed inset-0 flex items-center justify-center opacity-0 transition-opacity duration-500 pointer-events-none" style="z-index:20;">
+    <!-- Mars HUD — near bottom click hint -->
+    <div id="mars-hud" class="fixed opacity-0 transition-opacity duration-500 pointer-events-none" style="z-index:20; bottom:68px; left:50%; transform:translateX(-50%); white-space:nowrap;">
         <p id="mars-hud-text" class="mono text-[11px] tracking-[0.4em] uppercase text-center" style="color:#ff6b35;"></p>
     </div>
 
