@@ -259,7 +259,7 @@
         let smoothProgress2 = 0;
 
         // Launch colors — cycled per launch
-        const LAUNCH_COLORS = [0x00e5ff, 0xff6b35, 0xffffff, 0xc084fc, 0xfbbf24, 0x4ade80];
+        const LAUNCH_COLORS = [0x00e5ff, 0x00e5ff, 0x00e5ff, 0x00e5ff, 0x00e5ff, 0x00e5ff];
         let launchColorIndex = 0;
 
         function init() {
@@ -316,7 +316,7 @@
 
             // Complex Satellite Shells (LEO/MEO)
             createSatelliteShell(14.5, 200, 0x00e5ff,  0.002);   // LEO — reference
-            createSatelliteShell(17,   100, 0xffffff, -0.0016);  // MEO — retrograde, Kepler-correct
+            createSatelliteShell(17,   100, 0x00e5ff, -0.0016);  // MEO — retrograde, Kepler-correct
             createSatelliteShell(22,   50,  0x00e5ff, -0.0011);  // GEO — retrograde, Kepler-correct
 
             // 2. MOON
@@ -675,12 +675,12 @@
             scene.add(new THREE.Line(ringGeo, new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.08 })));
 
             // Rocket — visible during flight
-            const rGeo = new THREE.SphereGeometry(0.25, 8, 8);
+            const rGeo = new THREE.SphereGeometry(0.12, 8, 8);
             const rMat = new THREE.MeshBasicMaterial({ color });
             const rocket = new THREE.Mesh(rGeo, rMat);
 
             // Halo (removed on arrival)
-            const hGeo = new THREE.SphereGeometry(0.6, 8, 8);
+            const hGeo = new THREE.SphereGeometry(0.35, 8, 8);
             const hMat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.4 });
             rocket.add(new THREE.Mesh(hGeo, hMat));
 
@@ -701,6 +701,7 @@
             scene.add(igGlow);
             gsap.to(igGlow.scale, { x: 3, y: 3, z: 3, duration: 0.9, ease: 'power1.out' });
             gsap.to(igGMat, { opacity: 0, duration: 0.9, ease: 'power2.in', onComplete: () => scene.remove(igGlow) });
+            showHud('▲ LAUNCH CONFIRMED — LEO_SHELL_01 // Ascent trajectory locked', '#00e5ff', 4000);
             for (let i = 0; i < 5; i++) {
                 const len = 1.2 + Math.random() * 1.5;
                 const dir = new THREE.Vector3(-e_r.x + (Math.random()-0.5)*0.25, -e_r.y + (Math.random()-0.5)*0.25, -e_r.z + (Math.random()-0.5)*0.25).normalize();
@@ -803,8 +804,6 @@
                         scene.add(streak);
                         gsap.to(pMat, { opacity: 0, duration: 0.4 + Math.random() * 0.4, ease: 'power2.in', onComplete: () => scene.remove(streak) });
                     }
-
-                    showHud('▲ Payload inserted — LEO_SHELL_01 // Insertion confirmed', '#00e5ff', 3000);
 
                 }
             });
@@ -949,6 +948,27 @@
 
         function launchToMoonRealistic() {
 
+            // Historical launch sites that have successfully sent missions to the Moon
+            const LUNAR_SITES = [
+                { name: 'Cape Canaveral LC-39A',  lat: 28.608, lon: -80.604 },  // Apollo, Artemis
+                { name: 'Cape Canaveral LC-17',   lat: 28.445, lon: -80.565 },  // Ranger, Surveyor
+                { name: 'Baikonur LC-1/5',        lat: 45.920, lon:  63.342 },  // Luna 1–24, Zond
+                { name: 'Baikonur LC-200/39',     lat: 45.986, lon:  63.564 },  // Luna-25 (Proton)
+                { name: 'Tanegashima TNSC',       lat: 30.400, lon: 130.968 },  // SLIM (2024)
+                { name: 'Satish Dhawan SLP',      lat: 13.733, lon:  80.235 },  // Chandrayaan-3 (2023)
+                { name: 'Wenchang LC-101',        lat: 19.614, lon: 110.951 },  // Chang\'e-5, Chang\'e-6
+            ];
+            const site = LUNAR_SITES[Math.floor(Math.random() * LUNAR_SITES.length)];
+
+            // Compute 3-D world-space direction to the launch site, accounting for Earth's current spin
+            const latRad   = site.lat * Math.PI / 180;
+            const lonRad   = site.lon * Math.PI / 180 + earth.rotation.y;
+            const launchDir = new THREE.Vector3(
+                Math.cos(latRad) * Math.cos(lonRad),
+                Math.sin(latRad),
+                Math.cos(latRad) * Math.sin(lonRad)
+            ).normalize();
+
             const color    = 0x00e5ff;
             const moonPos  = moon.position.clone();
             const moonDist = moonPos.length();   // ≈ 64.2
@@ -997,16 +1017,29 @@
             }
 
             // ═══════════════════════════════════════════════════════════════════════
-            //  PHASE 0 — Ascent arc  (Earth surface → LEO, Hohmann)
-            //  e_r = –e1 (periapsis on anti-Moon side), apoapsis at +e1·R_LEO
-            //  Duration = Kepler half-period of transfer ellipse
+            //  PHASE 0 — Ascent arc  (historic launch site → Moon-facing LEO)
+            //  Quadratic Bézier from geographic surface point to e1·R_LEO so the
+            //  arc connects cleanly into the LEO parking orbit ring (c1.getPoint(0)).
             // ═══════════════════════════════════════════════════════════════════════
+            const p0_asc = launchDir.clone().multiplyScalar(R_SURF);   // surface at launch site
+            const p2_asc = e1.clone().multiplyScalar(R_LEO);           // Moon-facing LEO = c1.getPoint(0)
+            const midDir_asc = p0_asc.clone().add(p2_asc).normalize();
+            const p1_asc = midDir_asc.multiplyScalar(R_SURF + 0.55 * (R_LEO - R_SURF));
+            const c0pts  = [];
+            for (let k = 0; k <= 32; k++) {
+                const tt = k / 32;
+                const u  = 1 - tt;
+                c0pts.push(new THREE.Vector3(
+                    u*u*p0_asc.x + 2*u*tt*p1_asc.x + tt*tt*p2_asc.x,
+                    u*u*p0_asc.y + 2*u*tt*p1_asc.y + tt*tt*p2_asc.y,
+                    u*u*p0_asc.z + 2*u*tt*p1_asc.z + tt*tt*p2_asc.z
+                ));
+            }
+            const c0 = new THREE.CatmullRomCurve3(c0pts, false);
             const a0  = (R_SURF + R_LEO) / 2;
-            const ec0 = (R_LEO - R_SURF) / (R_LEO + R_SURF);
-            const c0  = keplerArc(a0, ec0, e1.clone().negate(), e2, 32, null);
             const dur0 = Thalf(a0, MU_E);
-            // c0[0] = –e1·R_SURF  (launch, anti-Moon side)
-            // c0[N] = +e1·R_LEO   (Moon-facing LEO insertion) ✓
+            // c0.getPoint(0) = p0_asc (geographic launch site)  ✓
+            // c0.getPoint(1) = p2_asc = e1·R_LEO = c1.getPoint(0)  ✓
 
             // ═══════════════════════════════════════════════════════════════════════
             //  PHASE 1 — LEO parking orbit  (1.5 revolutions before TLI burn)
@@ -1100,7 +1133,8 @@
             const loPreview  = new THREE.Line(new THREE.BufferGeometry().setFromPoints(c3.getPoints(80)), faintMat.clone());
             scene.add(tliPreview);
             scene.add(loPreview);
-            dvBurst(c0.getPoint(0), color, e1.clone().negate(), 0.45);
+            showHud(`▲ TLI BURN INITIATED — ${site.name.toUpperCase()} // Moon intercept plotted`, '#00e5ff', 4000);
+            dvBurst(c0.getPoint(0), color, launchDir.clone().negate(), 0.45);
 
             // ── Rocket mesh + glow halo ───────────────────────────────────────────
             const rocket = new THREE.Mesh(
@@ -1393,7 +1427,6 @@
             if (earth && earthHits.length > 0) {
                 launchPayload(earthHits[0].point, () => {});
             } else if (moon && raycaster.intersectObject(moon).length > 0) {
-                showHud('▲ TLI BURN INITIATED — LUNA_TRANSIT_01 // Moon intercept plotted', '#00e5ff', 4000);
                 launchToMoonRealistic();
             } else if (mars && raycaster.intersectObject(mars).length > 0) {
                 showHud('▲ TMI BURN INITIATED — MARS_TRANSIT_01 // Interplanetary trajectory locked', '#ff6b35', 5000);
