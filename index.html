@@ -897,7 +897,7 @@
 
         // Hohmann transfer: Earth → Moon
         function launchToMoon() {
-            const color = 0xffffff;
+            const color = 0x00e5ff;
             const r0 = 12;
             const r1 = moon.position.length() - 3; // ~61.2 — Earth-facing Moon surface
 
@@ -1079,7 +1079,7 @@
                 Math.cos(latRad) * Math.sin(lonRad)
             ).normalize();
 
-            const color    = 0xffffff;
+            const color    = 0x00e5ff;
             const moonPos  = moon.position.clone();
             const moonDist = moonPos.length();   // ≈ 64.2
 
@@ -1377,7 +1377,7 @@
         // Realistic multi-phase Mars mission: ascent → LEO → TMI coast → Mars orbit → descent
         function launchToMarsRealistic() {
 
-            const color    = 0xffffff;
+            const color    = 0x00e5ff;
             const marsPos  = mars.position.clone();
             const marsDist = marsPos.length();   // ≈ 163.5
 
