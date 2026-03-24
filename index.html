@@ -97,6 +97,9 @@
     </div>
 
     <div id="canvas-container"></div>
+    <div id="planet-tooltip" style="position:fixed; pointer-events:none; z-index:30; display:none; transform:translate(-50%, -140%); background:rgba(0,0,0,0.7); border:1px solid rgba(0,229,255,0.3); backdrop-filter:blur(6px); padding:6px 14px; white-space:nowrap;">
+        <p id="planet-tooltip-text" class="mono text-[9px] tracking-[0.25em] text-cyan-400 uppercase"></p>
+    </div>
 
     <!-- Launch HUD — near bottom click hint -->
     <div id="mission-hud" class="fixed opacity-0 transition-opacity duration-500 pointer-events-none" style="z-index:20; bottom:68px; left:50%; transform:translateX(-50%); white-space:nowrap;">
@@ -698,9 +701,33 @@
         }
 
         let mouseX = 0, mouseY = 0;
+        const tooltip = document.getElementById('planet-tooltip');
+        const tooltipText = document.getElementById('planet-tooltip-text');
+        const hoverRaycaster = new THREE.Raycaster();
+        const hoverMouse = new THREE.Vector2();
         window.addEventListener('mousemove', (e) => {
             mouseX = (e.clientX / window.innerWidth - 0.5);
             mouseY = (e.clientY / window.innerHeight - 0.5);
+            hoverMouse.x =  (e.clientX / window.innerWidth)  * 2 - 1;
+            hoverMouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            hoverRaycaster.setFromCamera(hoverMouse, camera);
+            const targets = [moon, mars, earth].filter(Boolean);
+            const hits = hoverRaycaster.intersectObjects(targets);
+            if (hits.length > 0) {
+                const obj = hits[0].object;
+                let label = '';
+                if (obj === moon)  label = 'Send payload to Moon';
+                else if (obj === mars)  label = 'Send payload to Mars';
+                else if (obj === earth) label = 'Launch to orbit';
+                tooltipText.textContent = label;
+                tooltip.style.display = 'block';
+                tooltip.style.left = e.clientX + 'px';
+                tooltip.style.top  = e.clientY + 'px';
+                document.body.style.cursor = 'pointer';
+            } else {
+                tooltip.style.display = 'none';
+                document.body.style.cursor = '';
+            }
         });
 
         window.addEventListener('resize', () => {
