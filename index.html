@@ -517,18 +517,44 @@
             const pathMat = new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: 0.07 });
             scene.add(new THREE.Line(pathGeo, pathMat));
 
-            // Rocket body
-            const rGeo = new THREE.SphereGeometry(0.12, 8, 8);
-            const rMat = new THREE.MeshBasicMaterial({ color: color });
-            const rMesh = new THREE.Mesh(rGeo, rMat);
+            // Tiny rocket group — oriented along +Y, rotated to face travel direction each frame
+            const rMesh = new THREE.Group();
+            const mat = new THREE.MeshBasicMaterial({ color: color });
 
-            // Engine plume
-            const pGeo = new THREE.SphereGeometry(0.28, 8, 8);
-            const pMat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.25 });
-            rMesh.add(new THREE.Mesh(pGeo, pMat));
+            // Body (cylinder)
+            const bodyMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.07, 0.32, 7), mat);
+            bodyMesh.position.y = 0;
+            rMesh.add(bodyMesh);
+
+            // Nose cone
+            const noseMesh = new THREE.Mesh(new THREE.ConeGeometry(0.055, 0.18, 7), mat);
+            noseMesh.position.y = 0.25;
+            rMesh.add(noseMesh);
+
+            // Engine nozzle
+            const nozzleMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 0.08, 7), mat);
+            nozzleMesh.position.y = -0.2;
+            rMesh.add(nozzleMesh);
+
+            // Fins (2 flat boxes)
+            const finMat = new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide });
+            [-1, 1].forEach(side => {
+                const fin = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.12, 0.02), finMat);
+                fin.position.set(side * 0.09, -0.19, 0);
+                rMesh.add(fin);
+            });
+
+            // Plume glow
+            const plumeMesh = new THREE.Mesh(
+                new THREE.ConeGeometry(0.06, 0.22, 7),
+                new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.3, blending: THREE.AdditiveBlending, depthWrite: false })
+            );
+            plumeMesh.position.y = -0.32;
+            plumeMesh.rotation.z = Math.PI; // point downward
+            rMesh.add(plumeMesh);
 
             scene.add(rMesh);
-            rocketSystem.push({ mesh: rMesh, curve: curve, t: phaseOffset % 1, speed: speed });
+            rocketSystem.push({ mesh: rMesh, curve: curve, t: phaseOffset % 1, speed: speed, isOrbitalRocket: true });
         }
 
         function createRocket(start, end, color, speed) {
@@ -578,8 +604,15 @@
                 if(r.t > 1) r.t = 0;
                 const pos = r.curve.getPoint(r.t);
                 r.mesh.position.copy(pos);
-                if (r.mesh.children.length > 0)
-                    r.mesh.children[0].scale.setScalar(1 + Math.sin(time * 10) * 0.2);
+                // Orient tiny rocket shapes to face direction of travel
+                if (r.isOrbitalRocket) {
+                    const ahead = r.curve.getPoint((r.t + 0.005) % 1);
+                    const dir = ahead.clone().sub(pos).normalize();
+                    // +Y is rocket nose — align +Y to travel direction
+                    const up = new THREE.Vector3(0, 1, 0);
+                    const quat = new THREE.Quaternion().setFromUnitVectors(up, dir);
+                    r.mesh.quaternion.copy(quat);
+                }
             });
 
             // Smooth progress to prevent GSAP scrub oscillations reaching lookAt
