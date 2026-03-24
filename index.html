@@ -249,10 +249,10 @@
         // Camera waypoints
         const CAM_START  = { x: -12,  y: 8,  z: 80   };  // close Earth
         const CAM_END    = { x: 35,   y: 10, z: -12  };  // close Moon
-        const CAM_MARS   = { x: 62,  y: -19, z: -26  };  // close Mars — tighter zoom
+        const CAM_MARS   = { x: 52,  y: -18, z: -35  };  // left of Mars, zoomed in — Mars sits right of frame
         const LOOK_START = { x: 0,   y: 0,   z: 0    };  // Earth center
         const LOOK_END   = { x: 40,  y: 4,   z: -44  };  // right of Moon — Moon sits left of frame
-        const LOOK_MARS  = { x: 67,  y: -24, z: -46  };  // left of Mars — Mars sits right of frame
+        const LOOK_MARS  = { x: 56,  y: -23, z: -46  };  // left of Mars center — Mars sits right of frame
 
         let scrollProgress2 = 0;
         let smoothProgress  = 0;   // lerped — decouples lookAt from GSAP scrub oscillations
@@ -327,7 +327,7 @@
             scene.add(moon);
 
             // 3. MARS — solid color first, apply texture only on successful load
-            const marsGeo = new THREE.SphereGeometry(2.5, 64, 64);
+            const marsGeo = new THREE.SphereGeometry(1.25, 64, 64);
             const marsMat = new THREE.MeshBasicMaterial({ color: 0xc1440e });
 
             function tryMarsTexture(urls, index) {
@@ -347,11 +347,11 @@
                 'https://raw.githubusercontent.com/nicktarnold/WORLDS/main/src/textures/mars.jpeg'
             ], 0);
             mars = new THREE.Mesh(marsGeo, marsMat);
-            mars.position.set(68, -22, -42);
+            mars.position.set(60, -22, -42);
             scene.add(mars);
 
             // Mars dust atmosphere glow
-            const marsAtmosGeo = new THREE.SphereGeometry(2.65, 64, 64);
+            const marsAtmosGeo = new THREE.SphereGeometry(1.325, 64, 64);
             const marsAtmosMat = new THREE.ShaderMaterial({
                 side: THREE.BackSide,
                 transparent: true,
@@ -392,15 +392,18 @@
             satSystem.push({ mesh: group, speed: speed });
         }
 
-        function createOrbitalRocket(radius, inclination, phaseOffset, color, speed) {
+        function createOrbitalRocket(radius, inclination, phaseOffset, color, speed, offset) {
             // Build a closed elliptical orbit path tilted by inclination
+            const ox = offset ? offset.x : 0;
+            const oy = offset ? offset.y : 0;
+            const oz = offset ? offset.z : 0;
             const segments = 80;
             const points = [];
             for (let i = 0; i < segments; i++) {  // no duplicate — closed:true handles wrap
                 const angle = (i / segments) * Math.PI * 2;
-                const x = radius * Math.cos(angle);
-                const y = radius * Math.sin(angle) * Math.sin(inclination);
-                const z = radius * Math.sin(angle) * Math.cos(inclination);
+                const x = ox + radius * Math.cos(angle);
+                const y = oy + radius * Math.sin(angle) * Math.sin(inclination);
+                const z = oz + radius * Math.sin(angle) * Math.cos(inclination);
                 points.push(new THREE.Vector3(x, y, z));
             }
             const curve = new THREE.CatmullRomCurve3(points, true);
@@ -1256,8 +1259,8 @@
             // ── Orbital radii ─────────────────────────────────────────────────────
             const R_SURF = 12;    // Earth surface
             const R_LEO  = 14.5;  // LEO parking orbit
-            const R_MO   = 6.5;   // Mars parking orbit radius (from Mars center)
-            const R_MARS = 2.8;   // Mars surface (~visual radius 2.5 + thin atmosphere)
+            const R_MO   = 2.8;   // Mars parking orbit radius (from Mars center)
+            const R_MARS = 1.4;   // Mars surface (~visual radius 1.25 + thin atmosphere)
 
             // ── Vis-viva / Kepler helpers ──────────────────────────────────────────
             const Thalf = (a, mu) => Math.PI     * Math.pow(a, 1.5) / Math.sqrt(mu);
