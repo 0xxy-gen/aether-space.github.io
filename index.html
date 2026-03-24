@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AETHER | Orbital Infrastructure & Logistics</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,600;1,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="//embed.typeform.com/next/embed.js"></script>
@@ -249,17 +249,17 @@
         // Camera waypoints
         const CAM_START  = { x: -12,  y: 8,  z: 80   };  // close Earth
         const CAM_END    = { x: 35,   y: 10, z: -12  };  // close Moon
-        const CAM_MARS   = { x: -125, y: 20, z: -92  };  // close Mars, same offset as Moon
-        const LOOK_START = { x: 0,    y: 0,  z: 0    };  // Earth center
-        const LOOK_END   = { x: 40,   y: 4,  z: -44  };  // right of Moon — Moon sits left of frame
-        const LOOK_MARS  = { x: -122, y: 14, z: -124 };  // left of Mars — Mars sits right of frame
+        const CAM_MARS   = { x: 63,  y: -17, z: -14  };  // close Mars, same offset as Moon cam
+        const LOOK_START = { x: 0,   y: 0,   z: 0    };  // Earth center
+        const LOOK_END   = { x: 40,  y: 4,   z: -44  };  // right of Moon — Moon sits left of frame
+        const LOOK_MARS  = { x: 75,  y: -24, z: -46  };  // left of Mars — Mars sits right of frame
 
         let scrollProgress2 = 0;
         let smoothProgress  = 0;   // lerped — decouples lookAt from GSAP scrub oscillations
         let smoothProgress2 = 0;
 
         // Launch colors — cycled per launch
-        const LAUNCH_COLORS = [0x00e5ff, 0x00e5ff, 0x00e5ff, 0x00e5ff, 0x00e5ff, 0x00e5ff];
+        const LAUNCH_COLORS = [0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff];
         let launchColorIndex = 0;
 
         function init() {
@@ -327,7 +327,7 @@
             scene.add(moon);
 
             // 3. MARS — solid color first, apply texture only on successful load
-            const marsGeo = new THREE.SphereGeometry(9, 64, 64);
+            const marsGeo = new THREE.SphereGeometry(1.2, 64, 64);
             const marsMat = new THREE.MeshBasicMaterial({ color: 0xc1440e });
 
             function tryMarsTexture(urls, index) {
@@ -347,11 +347,11 @@
                 'https://raw.githubusercontent.com/nicktarnold/WORLDS/main/src/textures/mars.jpeg'
             ], 0);
             mars = new THREE.Mesh(marsGeo, marsMat);
-            mars.position.set(-110, 15, -120);
+            mars.position.set(78, -22, -42);
             scene.add(mars);
 
             // Mars dust atmosphere glow
-            const marsAtmosGeo = new THREE.SphereGeometry(9.4, 64, 64);
+            const marsAtmosGeo = new THREE.SphereGeometry(1.28, 64, 64);
             const marsAtmosMat = new THREE.ShaderMaterial({
                 side: THREE.BackSide,
                 transparent: true,
@@ -361,28 +361,6 @@
             });
             mars.add(new THREE.Mesh(marsAtmosGeo, marsAtmosMat));
 
-            // Curiosity beacon — Gale Crater (4.5°S, 137.4°E) on Mars surface
-            const lat = -4.5  * Math.PI / 180;
-            const lon = 137.4 * Math.PI / 180;
-            const beaconPos = new THREE.Vector3(
-                9 * Math.cos(lat) * Math.cos(lon),
-                9 * Math.sin(lat),
-                9 * Math.cos(lat) * Math.sin(lon)
-            );
-            const beacon = new THREE.Mesh(
-                new THREE.SphereGeometry(0.18, 8, 8),
-                new THREE.MeshBasicMaterial({ color: 0xff6b35 })
-            );
-            beacon.position.copy(beaconPos);
-            mars.add(beacon); // child of mars so it rotates with it
-
-            // Beacon glow ring
-            const beaconGlow = new THREE.Mesh(
-                new THREE.SphereGeometry(0.38, 8, 8),
-                new THREE.MeshBasicMaterial({ color: 0xff6b35, transparent: true, opacity: 0.3 })
-            );
-            beaconGlow.position.copy(beaconPos);
-            mars.add(beaconGlow);
 
             // 4. ORBITAL ROCKETS (circling Earth)
             createOrbitalRocket(13.5, Math.PI * 0.18,  0.0,  0x00e5ff, 0.0022); // equatorial-ish, cyan
@@ -811,7 +789,7 @@
 
         // Hohmann transfer: Earth → Moon
         function launchToMoon() {
-            const color = 0x00e5ff;
+            const color = 0xffffff;
             const r0 = 12;
             const r1 = moon.position.length() - 3; // ~61.2 — Earth-facing Moon surface
 
@@ -969,7 +947,7 @@
                 Math.cos(latRad) * Math.sin(lonRad)
             ).normalize();
 
-            const color    = 0x00e5ff;
+            const color    = 0xffffff;
             const moonPos  = moon.position.clone();
             const moonDist = moonPos.length();   // ≈ 64.2
 
@@ -992,10 +970,17 @@
             const Thalf = (a, mu) => Math.PI       * Math.pow(a, 1.5) / Math.sqrt(mu);
             const Tfull = (a, mu) => 2 * Math.PI   * Math.pow(a, 1.5) / Math.sqrt(mu);
 
-            // ── Orbital plane: aligned with Earth–Moon axis ───────────────────────
-            const e1    = moonPos.clone().normalize();
-            const tempV = Math.abs(e1.y) > 0.99 ? new THREE.Vector3(1,0,0) : new THREE.Vector3(0,1,0);
-            const e2    = new THREE.Vector3().crossVectors(e1, tempV).normalize();
+            // ── Orbital plane: set by launch site so inclination is physically correct ─
+            // e2 = component of launchDir perpendicular to e1, normalised.
+            // This puts the LEO ring, TLI arc and lunar orbit in the plane that contains
+            // both the launch site and the Moon — inclination ≈ launch-site latitude.
+            const e1 = moonPos.clone().normalize();
+            const launchPerp = launchDir.clone().addScaledVector(e1, -launchDir.dot(e1));
+            const e2 = launchPerp.length() > 0.01
+                ? launchPerp.normalize()
+                : (Math.abs(e1.y) > 0.99
+                    ? new THREE.Vector3(1, 0, 0)
+                    : new THREE.Vector3(0, 1, 0));
 
             // Helper: build a Kepler arc (θ: 0→π, i.e. peri→apo) in the e1/e2 plane
             // e_r = periapsis direction, nPts = number of points
@@ -1127,12 +1112,37 @@
             // c4[0]  = θ=π: moonPos + e1·R_LO    (far side) ← connects from c3.getPoint(0) ✓
             // c4[N]  = θ=0: moonPos – e1·R_MOON  (near-side surface landing) ✓
 
-            // ── Faint trajectory preview (TLI arc + lunar orbit ring) ─────────────
-            const faintMat  = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.06 });
-            const tliPreview = new THREE.Line(new THREE.BufferGeometry().setFromPoints(c2.getPoints(64)), faintMat);
-            const loPreview  = new THREE.Line(new THREE.BufferGeometry().setFromPoints(c3.getPoints(80)), faintMat.clone());
+            // ── Trajectory previews ───────────────────────────────────────────────
+            // Earth-side paths (ascent, LEO ring, TLI arc) — faint guides
+            const faintMat      = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.10 });
+            const ascentPreview  = new THREE.Line(new THREE.BufferGeometry().setFromPoints(c0.getPoints(48)), faintMat.clone());
+            const leoPreview     = new THREE.Line(new THREE.BufferGeometry().setFromPoints(c1.getPoints(80)), faintMat.clone());
+            const tliPreview     = new THREE.Line(new THREE.BufferGeometry().setFromPoints(c2.getPoints(64)), faintMat.clone());
+            // Lunar orbit trace — grows point-by-point as the rocket orbits in Phase 3
+            const LO_TRACE_MAX  = 1600;
+            const loTraceBuf    = new Float32Array(LO_TRACE_MAX * 3);
+            const loTraceGeo    = new THREE.BufferGeometry();
+            loTraceGeo.setAttribute('position', new THREE.BufferAttribute(loTraceBuf, 3));
+            loTraceGeo.setDrawRange(0, 0);
+            const loTraceLine   = new THREE.Line(loTraceGeo,
+                new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending, depthWrite: false }));
+            let loTraceCount = 0;
+            function appendLoTrace(pos) {
+                if (loTraceCount >= LO_TRACE_MAX) return;
+                loTraceBuf[loTraceCount * 3]     = pos.x;
+                loTraceBuf[loTraceCount * 3 + 1] = pos.y;
+                loTraceBuf[loTraceCount * 3 + 2] = pos.z;
+                loTraceCount++;
+                loTraceGeo.attributes.position.needsUpdate = true;
+                loTraceGeo.setDrawRange(0, loTraceCount);
+            }
+            // Powered descent arc — medium visibility
+            const desMat         = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false });
+            const descentPreview = new THREE.Line(new THREE.BufferGeometry().setFromPoints(c4.getPoints(64)), desMat);
+            scene.add(ascentPreview);
+            scene.add(leoPreview);
             scene.add(tliPreview);
-            scene.add(loPreview);
+            // loPreview + descentPreview added on LOI (Phase 2 onComplete)
             showHud(`▲ TLI BURN INITIATED — ${site.name.toUpperCase()} // Moon intercept plotted`, '#00e5ff', 4000);
             dvBurst(c0.getPoint(0), color, launchDir.clone().negate(), 0.45);
 
@@ -1179,7 +1189,9 @@
             function clearTrail() { history.length = 0; }
             function cleanup() {
                 scene.remove(tLine); scene.remove(gLine);
-                scene.remove(tliPreview); scene.remove(loPreview);
+                scene.remove(ascentPreview); scene.remove(leoPreview);
+                scene.remove(tliPreview); scene.remove(loTraceLine);
+                scene.remove(descentPreview);
             }
 
             // ── GSAP Timeline ─────────────────────────────────────────────────────
@@ -1199,15 +1211,22 @@
             // Phase 2 — TLI coast (Hohmann half-ellipse, Kepler-timed: fast near Earth, slow near Moon)
             tl.to(tw, { t: 1, duration: dur2, ease: 'none',
                 onUpdate:   () => tick(c2.getPoint(tw.t)),
-                onComplete: () => { dvBurst(rocket.position.clone(), color, e2.clone()); tw.t = loInsertT; clearTrail(); }
+                onComplete: () => {
+                    dvBurst(rocket.position.clone(), color, e2.clone());
+                    showHud(`◎ LOI BURN — LUNAR ORBIT INSERTION // ${site.name.toUpperCase()} trajectory`, '#00e5ff', 3500);
+                    scene.add(loTraceLine);
+                    scene.add(descentPreview);
+                    tw.t = loInsertT; clearTrail();
+                }
             });
             // Phase 3 — Lunar parking orbit (1.5 revolutions, Moon's μ-derived period)
             tl.to(tw, { t: loInsertT + 1.5, duration: dur3, ease: 'none',
-                onUpdate:   () => tick(c3.getPoint(tw.t % 1)),
+                onUpdate:   () => { tick(c3.getPoint(tw.t % 1)); appendLoTrace(rocket.position.clone()); },
                 onComplete: () => { dvBurst(rocket.position.clone(), color, e2.clone()); tw.t = 0; clearTrail(); }
             });
             // Phase 4 — Powered descent (Hohmann arc under Moon gravity, apo→peri, Kepler-timed)
             tl.to(tw, { t: 1, duration: dur4, ease: 'none',
+                onStart:    () => gsap.to(loTraceLine.material, { opacity: 0, duration: dur4 * 0.85, ease: 'power1.in' }),
                 onUpdate:   () => tick(c4.getPoint(tw.t)),
                 onComplete: () => {
                     cleanup();
@@ -1221,7 +1240,7 @@
         // Realistic multi-phase Mars mission: ascent → LEO → TMI coast → Mars orbit → descent
         function launchToMarsRealistic() {
 
-            const color    = 0xff6b35;
+            const color    = 0xffffff;
             const marsPos  = mars.position.clone();
             const marsDist = marsPos.length();   // ≈ 163.5
 
@@ -1232,8 +1251,8 @@
             // ── Orbital radii ─────────────────────────────────────────────────────
             const R_SURF = 12;    // Earth surface
             const R_LEO  = 14.5;  // LEO parking orbit
-            const R_MO   = 13.5;  // Mars parking orbit radius (from Mars center)
-            const R_MARS = 9.0;   // Mars surface
+            const R_MO   = 3.2;   // Mars parking orbit radius (from Mars center)
+            const R_MARS = 1.4;   // Mars surface (~visual radius 1.2 + thin atmosphere)
 
             // ── Vis-viva / Kepler helpers ──────────────────────────────────────────
             const Thalf = (a, mu) => Math.PI     * Math.pow(a, 1.5) / Math.sqrt(mu);
@@ -1304,7 +1323,7 @@
             // Phase 4 — Powered descent arc (Mars orbit → Mars surface)
             const a4   = (R_MO + R_MARS) / 2;
             const ec4  = (R_MO - R_MARS) / (R_MO + R_MARS);
-            const dur4 = Thalf(a4, MU_M);
+            const dur4 = Thalf(a4, MU_M) * 6;  // scaled up — Kepler period alone is <1 s at this scale
             const d4pts = [];
             for (let k = 64; k >= 0; k--) {
                 const M  = (k/64) * Math.PI;
@@ -1393,7 +1412,7 @@
                 onUpdate:   () => tick(c3.getPoint(tw.t % 1)),
                 onComplete: () => { dvBurst(rocket.position.clone(), color, e2.clone()); tw.t = 0; clearTrail(); }
             });
-            tl.to(tw, { t: 1, duration: dur4, ease: 'none',
+            tl.to(tw, { t: 1, duration: dur4, ease: 'power2.out',
                 onUpdate:   () => tick(c4.getPoint(tw.t)),
                 onComplete: () => {
                     cleanup();
