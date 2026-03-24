@@ -249,10 +249,10 @@
         // Camera waypoints
         const CAM_START  = { x: -12,  y: 8,  z: 80   };  // close Earth
         const CAM_END    = { x: 35,   y: 10, z: -12  };  // close Moon
-        const CAM_MARS   = { x: 70,  y: -19, z: -26  };  // close Mars — tighter zoom
+        const CAM_MARS   = { x: 62,  y: -19, z: -26  };  // close Mars — tighter zoom
         const LOOK_START = { x: 0,   y: 0,   z: 0    };  // Earth center
         const LOOK_END   = { x: 40,  y: 4,   z: -44  };  // right of Moon — Moon sits left of frame
-        const LOOK_MARS  = { x: 75,  y: -24, z: -46  };  // left of Mars — Mars sits right of frame
+        const LOOK_MARS  = { x: 67,  y: -24, z: -46  };  // left of Mars — Mars sits right of frame
 
         let scrollProgress2 = 0;
         let smoothProgress  = 0;   // lerped — decouples lookAt from GSAP scrub oscillations
@@ -347,7 +347,7 @@
                 'https://raw.githubusercontent.com/nicktarnold/WORLDS/main/src/textures/mars.jpeg'
             ], 0);
             mars = new THREE.Mesh(marsGeo, marsMat);
-            mars.position.set(78, -22, -42);
+            mars.position.set(68, -22, -42);
             scene.add(mars);
 
             // Mars dust atmosphere glow
