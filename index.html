@@ -152,7 +152,10 @@
 
     <main class="ui-layer">
         <!-- Page 1: The Operating System for Orbital Logistics -->
-        <section id="page1" class="min-h-screen flex items-end pb-20 px-10 lg:px-32">
+        <section id="page1" class="min-h-screen flex items-end pb-20 px-10 lg:px-32 relative">
+            <!-- Between Moon & Mars label -->
+            <p class="interactive mono text-[9px] tracking-[0.4em] text-white/20 uppercase absolute top-1/2 right-10 lg:right-32 -translate-y-1/2 text-right">The Emerging<br/>Space Transportation<br/>Network</p>
+
             <div class="max-w-xl">
                 <div class="hud-line"></div>
                 <p class="mono text-[9px] tracking-[0.5em] text-cyan-400 uppercase mb-6">Node_01 / Vision</p>
@@ -191,14 +194,8 @@
             </div>
         </section>
 
-        <!-- Scroll spacer before Mars — split with interstitial text -->
-        <div style="height: 50vh;"></div>
-
-        <div class="flex items-center justify-center px-10">
-            <p class="mono text-[11px] md:text-[13px] tracking-[0.5em] text-white/20 uppercase text-center">The Emerging Space Transportation Network</p>
-        </div>
-
-        <div style="height: 70vh;"></div>
+        <!-- Scroll spacer before Mars -->
+        <div style="height: 120vh;"></div>
 
         <!-- Page 3: The System of Record for Launch Allocation -->
         <section id="page3" class="min-h-screen flex items-end pb-20 px-10 lg:px-32 relative">
