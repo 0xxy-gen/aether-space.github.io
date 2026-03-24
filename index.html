@@ -39,7 +39,7 @@
         #page2.visible, #page3.visible { opacity: 1; }
 
         /* Click hint */
-        #click-hint { position: fixed; bottom: 36px; left: 50%; transform: translateX(-50%); z-index: 20; pointer-events: none; white-space: nowrap; }
+        #click-hint { position: fixed; bottom: 36px; left: 50%; transform: translateX(-50%); z-index: 20; pointer-events: none; white-space: nowrap; transition: opacity 0.6s ease; }
         @keyframes hintPulse { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
         #click-hint { animation: hintPulse 2.8s ease-in-out infinite; }
 
@@ -204,6 +204,8 @@
         <!-- Page 2: Launch Allocation Breaks at Scale -->
         <section id="page2" class="min-h-screen flex items-center px-10 lg:px-32 relative">
             <div class="relative z-10 max-w-5xl w-full">
+                <div style="height:1px; width:100px; background:linear-gradient(90deg,#00E5FF,transparent); margin-bottom:8px;"></div>
+                <p class="mono text-[9px] tracking-[0.5em] text-cyan-400 uppercase mb-6">Node_02 / Moon</p>
                 <h2 class="text-5xl md:text-6xl lg:text-7xl tracking-tighter mb-8 leading-[1.0]">
                     <span class="font-bold">Manual allocation</span><br/>
                     <span class="font-bold">breaks</span> <span class="font-light text-white/40">before</span><br/>
@@ -222,8 +224,10 @@
 
         <!-- Page 3: The System of Record for Launch Allocation -->
         <section id="page3" class="min-h-screen flex items-end pb-20 px-10 lg:px-32 relative">
-            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black/85 pointer-events-none"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black pointer-events-none"></div>
             <div class="relative z-10 max-w-xl">
+                <div style="height:1px; width:100px; background:linear-gradient(90deg,#ff6b35,transparent); margin-bottom:8px;"></div>
+                <p class="mono text-[9px] tracking-[0.5em] uppercase mb-6" style="color:#ff6b35;">Node_03 / Mars</p>
                 <h2 class="text-5xl md:text-6xl lg:text-7xl tracking-tighter mb-8 leading-[1.0]">
                     <span class="font-light text-white/40">A</span> <span class="font-bold">multi-planetary future</span><br/>
                     <span class="font-light text-white/40">requires a</span><br/>
@@ -234,6 +238,24 @@
                 </p>
             </div>
         </section>
+
+        <!-- CTA -->
+        <section class="flex items-center justify-center px-10 lg:px-32 py-32 relative" style="background:#000;">
+
+            <div class="text-center max-w-xl" style="position:relative;z-index:2;">
+                <h2 class="text-3xl md:text-4xl lg:text-5xl tracking-tighter mb-6 leading-[1.0]">
+                    <span class="font-light text-white/40">Be part of</span> <span class="font-bold">humanity's expansion</span><br/><span class="font-light text-white/40">into space.</span>
+                </h2>
+                <p class="text-sm text-white/30 font-light leading-relaxed mb-10 max-w-sm mx-auto">
+                    We're building the coordination layer for the next era of space transportation. Join us.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button onclick="openContact()" class="interactive btn-access bg-cyan-400 hover:bg-cyan-300 text-black font-semibold px-8 py-3 rounded-full text-sm tracking-wide cursor-pointer">Share Your Mission →</button>
+                    <a href="partnerships.html" class="interactive mono text-[9px] tracking-[0.25em] border border-white/20 text-white/60 hover:border-cyan-400/50 hover:text-cyan-400 px-8 py-3 transition-colors cursor-pointer flex items-center justify-center">PARTNER WITH US →</a>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <script>
@@ -612,6 +634,12 @@
                 scrub: 1.2,
                 onUpdate: (self) => {
                     scrollProgress = self.progress;
+                    const hint = document.getElementById('click-hint');
+                    if (hint) {
+                        const o = Math.max(0, 1 - self.progress * 8);
+                        hint.style.animation = o < 1 ? 'none' : '';
+                        hint.style.opacity = o;
+                    }
                     if (self.progress > 0.05) {
                         document.getElementById('page2').classList.add('visible');
                     } else {
@@ -1597,6 +1625,7 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') closeContact();
         });
+
     </script>
 </body>
 </html>
