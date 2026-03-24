@@ -716,8 +716,8 @@
             if (hits.length > 0) {
                 const obj = hits[0].object;
                 let label = '';
-                if (obj === moon)  label = 'Send payload to Moon';
-                else if (obj === mars)  label = 'Send payload to Mars';
+                if (obj === moon)  label = 'Launch to Moon';
+                else if (obj === mars)  label = 'Launch to Mars';
                 else if (obj === earth) label = 'Launch to orbit';
                 tooltipText.textContent = label;
                 tooltip.style.display = 'block';
