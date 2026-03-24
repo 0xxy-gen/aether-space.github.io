@@ -44,7 +44,7 @@
         /* Contact drawer */
         #contact-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.55); backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: opacity 0.35s ease; }
         #contact-overlay.open { opacity: 1; pointer-events: auto; }
-        #contact-drawer { position: fixed; top: 0; right: 0; height: 100%; width: 100%; max-width: 440px; background: #080808; border-left: 1px solid rgba(255,255,255,0.08); z-index: 201; display: flex; flex-direction: column; padding: 48px 40px; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); }
+        #contact-drawer { position: fixed; top: 0; right: 0; height: 100%; width: 100%; max-width: 440px; background: #080808; border-left: 1px solid rgba(255,255,255,0.08); z-index: 201; display: flex; flex-direction: column; padding: 48px 40px; overflow-y: auto; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); }
         #contact-drawer.open { transform: translateX(0); }
         .contact-field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
         .contact-field label { font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.4em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
@@ -63,11 +63,10 @@
         <div class="flex items-center gap-16">
             <a href="index.html"><img src="images/aether-logo.jpg" alt="AETHER" style="height:28px; filter: invert(1); opacity:0.9;"></a>
             <div class="hidden lg:flex gap-10">
-                <a href="index.html" class="mono text-[9px] tracking-[0.3em] text-white/40 hover:text-cyan-400 transition-all">HOME</a>
                 <a href="team.html" class="mono text-[9px] tracking-[0.3em] text-white/40 hover:text-cyan-400 transition-all">TEAM</a>
-                <a href="solution.html" class="mono text-[9px] tracking-[0.3em] text-cyan-400 transition-all">SOLUTION</a>
-                <a href="partnerships.html" class="mono text-[9px] tracking-[0.3em] text-white/40 hover:text-cyan-400 transition-all">PARTNERSHIPS</a>
                 <a href="careers.html" class="mono text-[9px] tracking-[0.3em] text-white/40 hover:text-cyan-400 transition-all">CAREERS</a>
+                <a href="partnerships.html" class="mono text-[9px] tracking-[0.3em] text-white/40 hover:text-cyan-400 transition-all">PARTNERSHIPS</a>
+                <a href="blog.html" class="mono text-[9px] tracking-[0.3em] text-white/40 hover:text-cyan-400 transition-all">BLOG</a>
             </div>
         </div>
         <div class="flex items-center gap-8">
@@ -83,9 +82,7 @@
     <div id="contact-drawer">
         <div class="flex justify-between items-start mb-12">
             <div>
-                <div style="height:1px; width:40px; background:linear-gradient(90deg,#00E5FF,transparent); margin-bottom:8px;"></div>
-                <p class="mono text-[8px] tracking-[0.4em] text-cyan-400/60 uppercase mb-2">Comms_Link</p>
-                <h2 class="text-4xl tracking-tighter leading-[1.05] mb-0">Working on something<br/><span class="font-bold italic">mission-critical?</span><br/><span class="font-light text-white/40">Get in touch.</span></h2>
+                <h2 class="text-4xl tracking-tighter leading-[1.05] mb-0">Working on something<br/><span class="font-bold">mission-critical?</span><br/><span class="font-light text-white/40">Get in touch.</span></h2>
             </div>
             <button onclick="closeContact()" class="mono text-[10px] text-white/30 hover:text-white transition-colors cursor-pointer mt-1">✕ CLOSE</button>
         </div>
@@ -96,12 +93,20 @@
                 <p class="text-[11px] text-red-300/90 mt-1 min-h-[16px]" data-error-for="name" aria-live="polite"></p>
             </div>
             <div class="contact-field">
+                <label>Your Company</label>
+                <input name="company_vis" type="text" placeholder="Your organisation" autocomplete="organization">
+            </div>
+            <div class="contact-field">
+                <label>Your Role</label>
+                <input name="role" type="text" placeholder="Your job title">
+            </div>
+            <div class="contact-field">
                 <label for="contact-email">Your Email</label>
                 <input id="contact-email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>
                 <p class="text-[11px] text-red-300/90 mt-1 min-h-[16px]" data-error-for="email" aria-live="polite"></p>
             </div>
             <div class="contact-field" style="position:absolute; left:-9999px; opacity:0; pointer-events:none;">
-                <label for="contact-company">Company</label>
+                <label for="contact-company">Your Company</label>
                 <input id="contact-company" name="company" type="text" tabindex="-1" autocomplete="off">
             </div>
             <div class="contact-field">
