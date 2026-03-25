@@ -97,9 +97,18 @@
                 <span class="font-bold">mission control.</span>
             </h1>
 
-            <div class="fade-up-3 flex items-center gap-4 mt-12">
+            <div class="fade-up-3 flex items-center gap-4 mt-12 mb-10">
                 <p class="mono text-[11px] tracking-[0.3em] text-white/25 uppercase">Coming soon</p>
                 <span class="cursor"></span>
+            </div>
+
+            <div class="fade-up-3">
+                <p class="mono text-[8px] tracking-[0.4em] text-white/30 uppercase mb-4">Get notified when we launch</p>
+                <form class="flex gap-0" onsubmit="handleSubscribe(event)">
+                    <input id="sub-email" type="email" placeholder="you@example.com" class="bg-transparent border border-white/12 border-r-0 text-white text-sm font-light px-4 py-3 outline-none focus:border-cyan-400/50 transition-colors w-64 placeholder:text-white/20">
+                    <button type="submit" class="mono text-[9px] tracking-[0.25em] bg-cyan-400 hover:bg-cyan-300 text-black font-semibold px-6 py-3 transition-colors cursor-pointer whitespace-nowrap">SUBSCRIBE →</button>
+                </form>
+                <p id="sub-status" class="mono text-[9px] text-cyan-400/70 mt-3 min-h-[16px]"></p>
             </div>
         </div>
     </main>
@@ -108,6 +117,14 @@
         function openContact() { document.getElementById('contact-overlay').classList.add('open'); document.getElementById('contact-drawer').classList.add('open'); }
         function closeContact() { document.getElementById('contact-overlay').classList.remove('open'); document.getElementById('contact-drawer').classList.remove('open'); }
         document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeContact(); });
+
+        function handleSubscribe(e) {
+            e.preventDefault();
+            const email = document.getElementById('sub-email').value.trim();
+            if (!email) return;
+            document.getElementById('sub-status').textContent = 'You\'re on the list. We\'ll be in touch.';
+            document.getElementById('sub-email').value = '';
+        }
     </script>
 </body>
 </html>
