@@ -402,6 +402,11 @@
         const LOOK_END   = { x: 40,  y: 4,   z: -44  };  // right of Moon — Moon sits left of frame
         const LOOK_MARS  = { x: 58,  y: -22, z: -43  };  // slight rightward bias so Mars remains prominent and visible
 
+        // Mobile overview — wide shot showing Earth, Moon, Mars on first screen
+        const isMobile = window.innerWidth < 768;
+        const CAM_START_MOBILE  = { x: 10, y: 20, z: 130 };
+        const LOOK_START_MOBILE = { x: 28, y: -5, z: -22 };
+
         let scrollProgress2 = 0;
         let smoothProgress  = 0;   // lerped — decouples lookAt from GSAP scrub oscillations
         let smoothProgress2 = 0;
@@ -436,8 +441,15 @@
 
             createInfrastructure();
 
-            camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
-            camera.lookAt(LOOK_START.x, LOOK_START.y, LOOK_START.z);
+            if (isMobile) {
+                camera.fov = 55;
+                camera.updateProjectionMatrix();
+                camera.position.set(CAM_START_MOBILE.x, CAM_START_MOBILE.y, CAM_START_MOBILE.z);
+                camera.lookAt(LOOK_START_MOBILE.x, LOOK_START_MOBILE.y, LOOK_START_MOBILE.z);
+            } else {
+                camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
+                camera.lookAt(LOOK_START.x, LOOK_START.y, LOOK_START.z);
+            }
 
             animate();
             document.getElementById('loader').style.opacity = '0';
@@ -914,11 +926,13 @@
                 const lz = LOOK_START.z + (LOOK_END.z - LOOK_START.z) * p;
                 camera.lookAt(lx, ly, lz);
             } else {
-                // Stage 1: Earth close-up with mouse parallax
-                camera.position.x += (mouseX * 4 + CAM_START.x - camera.position.x) * 0.02;
-                camera.position.y += (-mouseY * 4 + CAM_START.y - camera.position.y) * 0.02;
-                camera.position.z += (CAM_START.z - camera.position.z) * 0.02;
-                camera.lookAt(0, 0, 0);
+                // Stage 1: idle with mouse parallax (mobile uses wide overview)
+                const cs = isMobile ? CAM_START_MOBILE : CAM_START;
+                const ls = isMobile ? LOOK_START_MOBILE : LOOK_START;
+                camera.position.x += (mouseX * 4 + cs.x - camera.position.x) * 0.02;
+                camera.position.y += (-mouseY * 4 + cs.y - camera.position.y) * 0.02;
+                camera.position.z += (cs.z - camera.position.z) * 0.02;
+                camera.lookAt(ls.x, ls.y, ls.z);
             }
 
             renderer.render(scene, camera);
