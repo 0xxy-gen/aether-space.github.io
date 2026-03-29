@@ -402,14 +402,14 @@
         const LOOK_END   = { x: 40,  y: 4,   z: -44  };  // right of Moon — Moon sits left of frame
         const LOOK_MARS  = { x: 58,  y: -22, z: -43  };  // slight rightward bias so Mars remains prominent and visible
 
-        // Mobile overview — closer planets, wide shot showing all three
+        // Mobile overview — camera left of scene, all three planets visible to the right
         const isMobile = window.innerWidth < 768;
-        const CAM_START_MOBILE  = { x: 5,  y: 15, z: 95  };
-        const LOOK_START_MOBILE = { x: 18, y: -4, z: -14 };
-        const CAM_END_MOBILE    = { x: 28, y: 7,  z: -6  };
-        const LOOK_END_MOBILE   = { x: 30, y: 3,  z: -20 };
-        const CAM_MARS_MOBILE   = { x: 36, y: -12, z: -24 };
-        const LOOK_MARS_MOBILE  = { x: 36, y: -12, z: -24 };
+        const CAM_START_MOBILE  = { x: -22, y: 12, z: 88 };
+        const LOOK_START_MOBILE = { x: 16,  y: -3, z: -12 };
+        const CAM_END_MOBILE    = { x: 26,  y: 7,  z: -5  };
+        const LOOK_END_MOBILE   = { x: 28,  y: 3,  z: -18 };
+        const CAM_MARS_MOBILE   = { x: 34,  y: -11, z: -22 };
+        const LOOK_MARS_MOBILE  = { x: 34,  y: -11, z: -22 };
 
         let scrollProgress2 = 0;
         let smoothProgress  = 0;   // lerped — decouples lookAt from GSAP scrub oscillations
