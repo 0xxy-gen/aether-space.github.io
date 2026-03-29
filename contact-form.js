@@ -1,4 +1,4 @@
-const CONTACT_API_ENDPOINT = '/api/contact';
+const CONTACT_API_ENDPOINT = 'https://aether-contact.gennangqy.workers.dev';
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function setStatusMessage(element, message, tone) {
