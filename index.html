@@ -122,8 +122,8 @@
         <p id="mission-hud-text" class="mono text-[11px] tracking-[0.15em] uppercase text-center"></p>
     </div>
 
-    <!-- Click hint — fixed center-bottom -->
-    <div id="click-hint">
+    <!-- Click hint — fixed center-bottom, hidden on mobile -->
+    <div id="click-hint" class="hidden sm:block">
         <p class="mono text-[11px] text-white tracking-[0.15em] uppercase"><span class="hidden sm:inline">Click</span><span class="sm:hidden">Tap</span> a target body to simulate a payload injection</p>
     </div>
 
@@ -207,7 +207,7 @@
 
     <main class="ui-layer">
         <!-- Page 1: The Operating System for Orbital Logistics -->
-        <section id="page1" class="min-h-screen flex items-end pb-20 px-10 lg:px-32 relative">
+        <section id="page1" class="min-h-screen flex items-center sm:items-end pb-10 sm:pb-20 pt-32 sm:pt-0 px-10 lg:px-32 relative">
             <!-- Between Moon & Mars label -->
             <p class="interactive mono text-[12px] tracking-[0.4em] text-white/40 uppercase absolute top-1/2 right-10 lg:right-32 -translate-y-1/2 text-right hidden md:block">The Emerging<br/>Space Transportation<br/>Network</p>
 
