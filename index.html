@@ -94,6 +94,7 @@
         #mobile-menu a { display: block; font-family: 'JetBrains Mono', monospace; font-size: 22px; letter-spacing: 0.15em; color: rgba(255,255,255,0.45); text-transform: uppercase; text-decoration: none; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.06); transition: color 0.2s; }
         #mobile-menu a:last-child { border-bottom: none; }
         #mobile-menu a:hover { color: #fff; }
+        #mobile-menu button { display: block; }
 
         /* Hamburger */
         #hamburger-btn { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
@@ -128,11 +129,12 @@
 
     <!-- Mobile menu -->
     <div id="mobile-menu">
-        <a href="/team/">TEAM</a>
-        <a href="/careers/">CAREERS</a>
-        <a href="/partnerships/">PARTNERSHIPS</a>
-        <a href="/faq/">FAQ</a>
-        <a href="/blog/">BLOG</a>
+        <a href="/team/" onclick="closeMobileMenu()">TEAM</a>
+        <a href="/careers/" onclick="closeMobileMenu()">CAREERS</a>
+        <a href="/partnerships/" onclick="closeMobileMenu()">PARTNERSHIPS</a>
+        <a href="/faq/" onclick="closeMobileMenu()">FAQ</a>
+        <a href="/blog/" onclick="closeMobileMenu()">BLOG</a>
+        <button onclick="closeMobileMenu(); openContact();" class="interactive mono text-[11px] tracking-[0.3em] bg-white text-black px-6 py-3 font-medium mt-8 w-full cursor-pointer">CONTACT US →</button>
     </div>
 
     <!-- Navigation -->
@@ -152,7 +154,7 @@
                 <p class="mono text-[8px] text-cyan-400 uppercase tracking-widest">System Latency</p>
                 <p class="mono text-[10px] text-white/60">0.0024ms</p>
             </div>
-            <button onclick="openContact()" class="interactive mono text-[9px] tracking-[0.25em] bg-white text-black px-5 py-2 font-medium hover:bg-white/90 transition-colors cursor-pointer">CONTACT US</button>
+            <button onclick="openContact()" class="interactive mono text-[9px] tracking-[0.25em] bg-white text-black px-5 py-2 font-medium hover:bg-white/90 transition-colors cursor-pointer hidden lg:block">CONTACT US</button>
             <button id="hamburger-btn" onclick="toggleMobileMenu()" class="interactive" aria-label="Menu">
                 <span></span><span></span><span></span>
             </button>
