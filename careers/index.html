@@ -118,11 +118,11 @@
             <button onclick="closeApply()" class="mono text-[10px] text-white/30 hover:text-white transition-colors cursor-pointer mt-1">✕ CLOSE</button>
         </div>
         <p id="apply-role-desc" class="text-sm text-white/40 font-light leading-relaxed mb-8 border-l border-cyan-500/20 pl-4"></p>
-        <div class="apply-field"><label>Your Name</label><input type="text" placeholder="Your full name"></div>
-        <div class="apply-field"><label>Your Email</label><input type="email" placeholder="you@example.com"></div>
-        <div class="apply-field"><label>LinkedIn or Portfolio URL</label><input type="url" placeholder="https://"></div>
-        <div class="apply-field"><label>Why Aether?</label><textarea placeholder="What draws you to this role and to Aether?"></textarea></div>
-        <div class="apply-field"><label>Anything else?</label><textarea placeholder="Relevant experience, projects, or links…" style="min-height:80px;"></textarea></div>
+        <div class="apply-field"><label>Your Name</label><input type="text" name="apply-name" placeholder="Your full name"></div>
+        <div class="apply-field"><label>Your Email</label><input type="email" name="apply-email" placeholder="you@example.com"></div>
+        <div class="apply-field"><label>LinkedIn or Portfolio URL</label><input type="url" name="apply-linkedin" placeholder="https://"></div>
+        <div class="apply-field"><label>Why Aether?</label><textarea name="apply-why" placeholder="What draws you to this role and to Aether?"></textarea></div>
+        <div class="apply-field"><label>Anything else?</label><textarea name="apply-extra" placeholder="Relevant experience, projects, or links…" style="min-height:80px;"></textarea></div>
         <div class="apply-field">
             <label>CV / Resume</label>
             <div class="file-upload-box mt-2" id="cv-upload-box" onclick="document.getElementById('cv-upload').click()">
@@ -135,7 +135,8 @@
                 <button onclick="cvClear(event)" class="mono text-[9px] text-white/30 hover:text-white transition-colors cursor-pointer ml-4">✕ REMOVE</button>
             </div>
         </div>
-        <button class="mt-2 w-full bg-cyan-400 hover:bg-cyan-300 text-black font-semibold py-3 text-sm tracking-wide transition-colors cursor-pointer">Submit Application →</button>
+        <p id="apply-status" class="mono text-[9px] mt-[-8px] mb-3 min-h-[16px]"></p>
+        <button id="apply-submit" onclick="handleApplySubmit()" class="mt-2 w-full bg-cyan-400 hover:bg-cyan-300 text-black font-semibold py-3 text-sm tracking-wide transition-colors cursor-pointer">Submit Application →</button>
     </div>
 
     <!-- Main -->
@@ -234,6 +235,60 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') { closeContact(); closeApply(); }
         });
+
+        async function handleApplySubmit() {
+            const status = document.getElementById('apply-status');
+            const btn = document.getElementById('apply-submit');
+            const drawer = document.getElementById('apply-drawer');
+            const name = drawer.querySelector('[name="apply-name"]').value.trim();
+            const email = drawer.querySelector('[name="apply-email"]').value.trim();
+            const linkedin = drawer.querySelector('[name="apply-linkedin"]').value.trim();
+            const why = drawer.querySelector('[name="apply-why"]').value.trim();
+            const extra = drawer.querySelector('[name="apply-extra"]').value.trim();
+            const role = document.getElementById('apply-role-title').textContent;
+
+            if (!name || !email) {
+                status.textContent = 'Please fill in your name and email.';
+                status.style.color = 'rgba(252,165,165,0.9)';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+            status.textContent = '';
+
+            const messageParts = [];
+            if (linkedin) messageParts.push('LinkedIn / Portfolio: ' + linkedin);
+            if (why) messageParts.push('Why Aether:\n' + why);
+            if (extra) messageParts.push('Anything else:\n' + extra);
+
+            try {
+                const res = await fetch('https://aether-contact.gennangqy.workers.dev', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        company: role,
+                        message: messageParts.join('\n\n') || '(No message)',
+                        page: 'careers',
+                        submittedAt: new Date().toISOString()
+                    })
+                });
+                const payload = await res.json().catch(() => ({}));
+                if (!res.ok) throw new Error(payload.error || 'Please try again.');
+                drawer.querySelectorAll('input[name], textarea[name]').forEach(el => el.value = '');
+                cvClear({ stopPropagation: () => {} });
+                status.textContent = payload.message || 'Application sent. We will be in touch.';
+                status.style.color = '#67e8f9';
+            } catch (err) {
+                status.textContent = err.message || 'Something went wrong. Please try again.';
+                status.style.color = 'rgba(252,165,165,0.9)';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Submit Application →';
+            }
+        }
     </script>
 </body>
 </html>
