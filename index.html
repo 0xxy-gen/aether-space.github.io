@@ -986,6 +986,7 @@
         window.addEventListener('mousemove', (e) => {
             mouseX = (e.clientX / window.innerWidth - 0.5);
             mouseY = (e.clientY / window.innerHeight - 0.5);
+            if (isMobile) return;
             hoverMouse.x =  (e.clientX / window.innerWidth)  * 2 - 1;
             hoverMouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
             hoverRaycaster.setFromCamera(hoverMouse, camera);
