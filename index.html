@@ -402,10 +402,14 @@
         const LOOK_END   = { x: 40,  y: 4,   z: -44  };  // right of Moon — Moon sits left of frame
         const LOOK_MARS  = { x: 58,  y: -22, z: -43  };  // slight rightward bias so Mars remains prominent and visible
 
-        // Mobile overview — wide shot showing Earth, Moon, Mars on first screen
+        // Mobile overview — closer planets, wide shot showing all three
         const isMobile = window.innerWidth < 768;
-        const CAM_START_MOBILE  = { x: 10, y: 20, z: 130 };
-        const LOOK_START_MOBILE = { x: 28, y: -5, z: -22 };
+        const CAM_START_MOBILE  = { x: 5,  y: 15, z: 95  };
+        const LOOK_START_MOBILE = { x: 18, y: -4, z: -14 };
+        const CAM_END_MOBILE    = { x: 28, y: 7,  z: -6  };
+        const LOOK_END_MOBILE   = { x: 30, y: 3,  z: -20 };
+        const CAM_MARS_MOBILE   = { x: 36, y: -12, z: -24 };
+        const LOOK_MARS_MOBILE  = { x: 36, y: -12, z: -24 };
 
         let scrollProgress2 = 0;
         let smoothProgress  = 0;   // lerped — decouples lookAt from GSAP scrub oscillations
@@ -442,6 +446,11 @@
             createInfrastructure();
 
             if (isMobile) {
+                // Bring Moon and Mars closer to Earth and scale them up
+                moon.position.set(30, 3, -20);
+                moon.scale.setScalar(1.8);
+                mars.position.set(36, -12, -24);
+                mars.scale.setScalar(4.5);
                 camera.fov = 55;
                 camera.updateProjectionMatrix();
                 camera.position.set(CAM_START_MOBILE.x, CAM_START_MOBILE.y, CAM_START_MOBILE.z);
@@ -899,40 +908,45 @@
             smoothProgress2 += (scrollProgress2 - smoothProgress2) * 0.08;
 
             // Camera: three-stage scroll
+            const camEnd  = isMobile ? CAM_END_MOBILE  : CAM_END;
+            const camMars = isMobile ? CAM_MARS_MOBILE : CAM_MARS;
+            const lookEnd  = isMobile ? LOOK_END_MOBILE  : LOOK_END;
+            const lookMars = isMobile ? LOOK_MARS_MOBILE : LOOK_MARS;
+            const camStart = isMobile ? CAM_START_MOBILE : CAM_START;
+            const lookStart = isMobile ? LOOK_START_MOBILE : LOOK_START;
+
             if (smoothProgress2 > 0.01) {
                 // Stage 3: zoom into Mars
                 const p = smoothProgress2;
-                const tx = CAM_END.x + (CAM_MARS.x - CAM_END.x) * p;
-                const ty = CAM_END.y + (CAM_MARS.y - CAM_END.y) * p;
-                const tz = CAM_END.z + (CAM_MARS.z - CAM_END.z) * p;
+                const tx = camEnd.x + (camMars.x - camEnd.x) * p;
+                const ty = camEnd.y + (camMars.y - camEnd.y) * p;
+                const tz = camEnd.z + (camMars.z - camEnd.z) * p;
                 camera.position.x += (tx - camera.position.x) * 0.07;
                 camera.position.y += (ty - camera.position.y) * 0.07;
                 camera.position.z += (tz - camera.position.z) * 0.07;
-                const lx = LOOK_END.x + (LOOK_MARS.x - LOOK_END.x) * p;
-                const ly = LOOK_END.y + (LOOK_MARS.y - LOOK_END.y) * p;
-                const lz = LOOK_END.z + (LOOK_MARS.z - LOOK_END.z) * p;
+                const lx = lookEnd.x + (lookMars.x - lookEnd.x) * p;
+                const ly = lookEnd.y + (lookMars.y - lookEnd.y) * p;
+                const lz = lookEnd.z + (lookMars.z - lookEnd.z) * p;
                 camera.lookAt(lx, ly, lz);
             } else if (smoothProgress > 0.01) {
                 // Stage 2: pull back to Earth + Moon
                 const p = smoothProgress;
-                const tx = CAM_START.x + (CAM_END.x - CAM_START.x) * p;
-                const ty = CAM_START.y + (CAM_END.y - CAM_START.y) * p;
-                const tz = CAM_START.z + (CAM_END.z - CAM_START.z) * p;
+                const tx = camStart.x + (camEnd.x - camStart.x) * p;
+                const ty = camStart.y + (camEnd.y - camStart.y) * p;
+                const tz = camStart.z + (camEnd.z - camStart.z) * p;
                 camera.position.x += (tx - camera.position.x) * 0.07;
                 camera.position.y += (ty - camera.position.y) * 0.07;
                 camera.position.z += (tz - camera.position.z) * 0.07;
-                const lx = LOOK_START.x + (LOOK_END.x - LOOK_START.x) * p;
-                const ly = LOOK_START.y + (LOOK_END.y - LOOK_START.y) * p;
-                const lz = LOOK_START.z + (LOOK_END.z - LOOK_START.z) * p;
+                const lx = lookStart.x + (lookEnd.x - lookStart.x) * p;
+                const ly = lookStart.y + (lookEnd.y - lookStart.y) * p;
+                const lz = lookStart.z + (lookEnd.z - lookStart.z) * p;
                 camera.lookAt(lx, ly, lz);
             } else {
                 // Stage 1: idle with mouse parallax (mobile uses wide overview)
-                const cs = isMobile ? CAM_START_MOBILE : CAM_START;
-                const ls = isMobile ? LOOK_START_MOBILE : LOOK_START;
-                camera.position.x += (mouseX * 4 + cs.x - camera.position.x) * 0.02;
-                camera.position.y += (-mouseY * 4 + cs.y - camera.position.y) * 0.02;
-                camera.position.z += (cs.z - camera.position.z) * 0.02;
-                camera.lookAt(ls.x, ls.y, ls.z);
+                camera.position.x += (mouseX * 4 + camStart.x - camera.position.x) * 0.02;
+                camera.position.y += (-mouseY * 4 + camStart.y - camera.position.y) * 0.02;
+                camera.position.z += (camStart.z - camera.position.z) * 0.02;
+                camera.lookAt(lookStart.x, lookStart.y, lookStart.z);
             }
 
             renderer.render(scene, camera);
