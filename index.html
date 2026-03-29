@@ -403,6 +403,11 @@
         const LOOK_MARS  = { x: 58,  y: -22, z: -43  };  // slight rightward bias so Mars remains prominent and visible
 
         const isMobile = window.innerWidth < 768;
+        // Mobile scroll waypoints — pulled back so Moon/Mars fit in portrait viewport
+        const CAM_END_MOBILE   = { x: 20,  y: 8,  z: 20  };
+        const LOOK_END_MOBILE  = { x: 50,  y: 5,  z: -40 };  // Moon center
+        const CAM_MARS_MOBILE  = { x: 42,  y: -14, z: -20 };
+        const LOOK_MARS_MOBILE = { x: 58,  y: -22, z: -43 };
 
         let scrollProgress2 = 0;
         let smoothProgress  = 0;   // lerped — decouples lookAt from GSAP scrub oscillations
@@ -889,10 +894,10 @@
             smoothProgress2 += (scrollProgress2 - smoothProgress2) * 0.08;
 
             // Camera: three-stage scroll
-            const camEnd  = CAM_END;
-            const camMars = CAM_MARS;
-            const lookEnd  = LOOK_END;
-            const lookMars = LOOK_MARS;
+            const camEnd   = isMobile ? CAM_END_MOBILE  : CAM_END;
+            const camMars  = isMobile ? CAM_MARS_MOBILE : CAM_MARS;
+            const lookEnd  = isMobile ? LOOK_END_MOBILE  : LOOK_END;
+            const lookMars = isMobile ? LOOK_MARS_MOBILE : LOOK_MARS;
             const camStart = CAM_START;
             const lookStart = LOOK_START;
 
